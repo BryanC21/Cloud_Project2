@@ -124,4 +124,16 @@ con.query(sql, function (err, result) {
     console.log("1 record inserted");
 });
 
+var sql = "INSERT INTO Restaurant (name, description, logo, owner_id) VALUES ('Johns Restaurant', 'A restaurant', 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_3x2.jpg', 1)";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("1 record inserted");
+});
+
+var sql = "INSERT INTO Menu_Item (name, description, image, price, restaurant_id) VALUES ('Pizza', 'A pizza', 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg', '10.00', 1)";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("1 record inserted");
+});
+
 con.end();
