@@ -35,7 +35,7 @@ app.post('/api/restaurant/register', function (req, res) {
     } else {
       console.log("Result: " + JSON.stringify(result));
       if (result.affectedRows != 0) {
-        res.status(200).send({ code: 200, message: "Restaurant Register Successful" });
+        res.status(200).send({ code: 200, message: "Restaurant Register Successful", restaurant_id: result.insertId });
       } else {
         res.status(400).send({ code: 400, message: "Restaurant Register Failed" });
       }
