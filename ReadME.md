@@ -12,6 +12,7 @@ Routes
 User Routes missing for now
 
 Restaurant Routes
+Types are Strings unless otherwise specified
 -------------------
 `POST /api/restaurant/register` - Register a new restaurant
   Request: 
@@ -20,7 +21,7 @@ Restaurant Routes
     "name": "Restaurant Name",
     "description": "Restaurant Description Ex: A restaurant that serves italian food",
     "logo": "Link to image for logo",
-    "owner_id": "User ID of owner account. Can use 1 for the default user"",
+    "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
   }
   ```
   Response: 
@@ -29,18 +30,18 @@ Restaurant Routes
     "code": 200/400,
     "Message": "Success/Error Message"",
     if sucessful:
-      "restaurant_id": "ID of the restaurant created Ex. 1"
+      "restaurant_id": INT "ID of the restaurant created Ex. 1"
   }
   ```
 `POST /api/restaurant/update` - Update a restaurant. Must Pass in all attributes. If you arent changing one, pass in the old value.
   Request: 
   ```
   {
-    "restaurant_id": "ID of the restaurant to update Ex. 1",
+    "restaurant_id": INT "ID of the restaurant to update Ex. 1",
     "name": "Restaurant Name",
     "description": "Restaurant Description Ex: A restaurant that serves italian food",
     "logo": "Link to image for logo",
-    "owner_id": "User ID of owner account. Can use 1 for the default user"",
+    "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
   }
   ```
   Response: 
@@ -55,7 +56,7 @@ Restaurant Routes
     Request: 
     ```
     {
-        "restaurant_id": "ID of the restaurant to delete Ex. 1",
+        "restaurant_id": INT "ID of the restaurant to delete Ex. 1",
     }
     ```
     Response: 
