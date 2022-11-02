@@ -37,7 +37,7 @@ Types are Strings unless otherwise specified
   Request: 
   ```
   {
-    "restaurant_id": INT "ID of the restaurant to update Ex. 1",
+    "id": INT "ID of the restaurant to update Ex. 1",
     "name": "Restaurant Name",
     "description": "Restaurant Description Ex: A restaurant that serves italian food",
     "logo": "Link to image for logo",
@@ -56,7 +56,7 @@ Types are Strings unless otherwise specified
   Request: 
   ```
   {
-    "restaurant_id": INT "ID of the restaurant to delete Ex. 1",
+    "id": INT "ID of the restaurant to delete Ex. 1",
   }
   ```
   Response: 
@@ -70,7 +70,7 @@ Types are Strings unless otherwise specified
   Request: 
   ```
   {
-    "restaurant_id": INT "ID of the restaurant to get Ex. 1",
+    "id": INT "ID of the restaurant to get Ex. 1",
   }
   ```
   Response: 
@@ -153,7 +153,7 @@ Types are Strings unless otherwise specified
   Request: 
   ```
   {
-    "menu_id": INT "ID of the menu item to update Ex. 1",
+    "id": INT "ID of the menu item to update Ex. 1",
     "name": "Item Name",
     "description": "Item Description Ex: A delicious pizza",
     "price": "Price of the item Ex. 12.99",
@@ -171,7 +171,7 @@ Types are Strings unless otherwise specified
   Request: 
   ```
   {
-    "menu_id": INT "ID of the menu item to delete Ex. 1",
+    "id": INT "ID of the menu item to delete Ex. 1",
   }
   ```
   Response: 
@@ -185,7 +185,7 @@ Types are Strings unless otherwise specified
   Request: 
   ```
   {
-    "menu_id": INT "ID of the menu item to get Ex. 1",
+    "id": INT "ID of the menu item to get Ex. 1",
   }
   ```
   Response: 
@@ -204,5 +204,43 @@ Types are Strings unless otherwise specified
         "creation_time": TIMESTAMP "Time the menu item was created",
         "update_time": TIMESTAMP "Time the menu item was last updated",
       }
+  }
+  ```
+`POST /api/menu/getAllForRestaurant` - Get all menu items
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to get menu items for Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "menus": [
+        {
+          "id": INT "ID of the menu item created Ex. 1",
+          "name": "Item Name",
+          "description": "Item Description Ex: A delicious pizza",
+          "price": "Price of the item Ex. 12.99",
+          "image": "Link to image",
+          "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+          "creation_time": TIMESTAMP "Time the menu item was created",
+          "update_time": TIMESTAMP "Time the menu item was last updated",
+        },
+        {
+          "id": INT "ID of the menu item created Ex. 1",
+          "name": "Item Name",
+          "description": "Item Description Ex: A delicious pizza",
+          "price": "Price of the item Ex. 12.99",
+          "image": "Link to image",
+          "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+          "creation_time": TIMESTAMP "Time the menu item was created",
+          "update_time": TIMESTAMP "Time the menu item was last updated",
+        },
+        ...
+      ]
   }
   ```
