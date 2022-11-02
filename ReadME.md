@@ -53,16 +53,16 @@ Types are Strings unless otherwise specified
   ```
 
 `GET /api/restaurant/delete` - Delete a restaurant by ID  
-    Request: 
-    ```
-    {
-        "restaurant_id": INT "ID of the restaurant to delete Ex. 1",
-    }
-    ```
-    Response: 
-    ```
-    {
-        "code": 200/400,
-        "Message": "Success/Error Message"",
-    }
-    ```
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to delete Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
