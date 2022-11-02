@@ -14,7 +14,7 @@ User Routes missing for now
 Restaurant Routes
 Types are Strings unless otherwise specified
 -------------------
-`POST /api/restaurant/register` - Register a new restaurant
+`POST /api/restaurant/register` - Register a new restaurant  
   Request: 
   ```
   {
@@ -33,7 +33,7 @@ Types are Strings unless otherwise specified
       "restaurant_id": INT "ID of the restaurant created Ex. 1"
   }
   ```
-`POST /api/restaurant/update` - Update a restaurant. Must Pass in all attributes. If you arent changing one, pass in the old value.
+`POST /api/restaurant/update` - Update a restaurant. Must Pass in all attributes. If you arent changing one, pass in the old value.  
   Request: 
   ```
   {
@@ -52,7 +52,7 @@ Types are Strings unless otherwise specified
   }
   ```
 
-`GET /api/restaurant/delete` - Delete a restaurant by ID
+`GET /api/restaurant/delete` - Delete a restaurant by ID  
     Request: 
     ```
     {
