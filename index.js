@@ -108,7 +108,7 @@ app.post('/api/restaurant/menu/add', function (req, res) {
     } else {
       console.log("Result: " + JSON.stringify(result));
       if (result.affectedRows != 0) {
-        res.status(200).send({ code: 200, message: "Menu Item Add Successful" });
+        res.status(200).send({ code: 200, message: "Menu Item Add Successful", menu_item_id: result.insertId });
       } else {
         res.status(400).send({ code: 400, message: "Menu Item Add Failed" });
       }
@@ -177,8 +177,8 @@ app.post('/api', function (req, res) {
 app.get('*', function (req, res) {
   res.send({
     "Output": "This route doesnt exist!"
-  });
+  }); 
 });
 
-app.listen(port, () => console.log(`app listening on port ${port}!`));
+app.listen(port, () => console.log(`app listening on http://localhost:${port}`));
 module.exports = app;

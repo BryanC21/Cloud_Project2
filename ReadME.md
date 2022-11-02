@@ -11,7 +11,7 @@ Routes
 ===================
 User Routes missing for now
 
-Restaurant Routes
+Restaurant Routes  
 Types are Strings unless otherwise specified
 -------------------
 `POST /api/restaurant/register` - Register a new restaurant  
@@ -52,11 +52,67 @@ Types are Strings unless otherwise specified
   }
   ```
 
-`GET /api/restaurant/delete` - Delete a restaurant by ID  
+`POST /api/restaurant/delete` - Delete a restaurant by ID  
   Request: 
   ```
   {
     "restaurant_id": INT "ID of the restaurant to delete Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
+
+Menu Routes  
+Types are Strings unless otherwise specified
+-------------------
+`POST /api/menu/add` - Add a new menu item  
+  Request: 
+  ```
+  {
+    "name": "Item Name",
+    "description": "Item Description Ex: A delicious pizza",
+    "price": "Price of the item Ex. 12.99",
+    "image": "Link to image",
+    "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "menu_id": INT "ID of the menu item created Ex. 1"
+  }
+  ```
+`POST /api/menu/update` - Update a menu item. Must Pass in all attributes. If you arent changing one pass in the old one.  
+  Request: 
+  ```
+  {
+    "menu_id": INT "ID of the menu item to update Ex. 1",
+    "name": "Item Name",
+    "description": "Item Description Ex: A delicious pizza",
+    "price": "Price of the item Ex. 12.99",
+    "image": "Link to image",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
+`POST /api/menu/delete` - Delete a menu item by ID
+  Request: 
+  ```
+  {
+    "menu_id": INT "ID of the menu item to delete Ex. 1",
   }
   ```
   Response: 
