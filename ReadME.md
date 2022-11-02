@@ -66,7 +66,7 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
-`POST /api/restaurant/get` - Get a restaurant by ID
+`POST /api/restaurant/get` - Get a restaurant by ID  
   Request: 
   ```
   {
@@ -90,7 +90,7 @@ Types are Strings unless otherwise specified
       }
   }
   ```
-`POST /api/restaurant/getAll` - Get all restaurants
+`POST /api/restaurant/getAll` - Get all restaurants  
   Request: 
   ```
   {
@@ -167,7 +167,7 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
-`POST /api/menu/delete` - Delete a menu item by ID
+`POST /api/menu/delete` - Delete a menu item by ID  
   Request: 
   ```
   {
@@ -181,7 +181,7 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
-`POST /api/menu/get` - Get a menu item by ID
+`POST /api/menu/get` - Get a menu item by ID  
   Request: 
   ```
   {
@@ -206,7 +206,7 @@ Types are Strings unless otherwise specified
       }
   }
   ```
-`POST /api/menu/getAllForRestaurant` - Get all menu items
+`POST /api/menu/getAllForRestaurant` - Get all menu items  
   Request: 
   ```
   {
