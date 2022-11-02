@@ -74,7 +74,7 @@ description VARCHAR(255), \
 logo VARCHAR(255), \
 owner_id INT NOT NULL, \
 creation_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-updatetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \
+update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \
 PRIMARY KEY (id), FOREIGN KEY (owner_id) REFERENCES User(id))";
 con.query(sql, function (err, result) {
     if (err) throw err;

@@ -90,6 +90,44 @@ app.post('/api/restaurant/delete', function (req, res) {
   });
 });
 
+app.post('/api/restaurant/get', function (req, res) {
+  console.log("Restaurant get");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  let sql = `SELECT * FROM Restaurant WHERE id = '${id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get restaurant", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        res.status(200).send({ code: 200, message: "Restaurant Get Successful", restaurant: result[0] });
+      } else {
+        res.status(400).send({ code: 400, message: "Restaurant Get Failed" });
+      }
+    }
+  });
+});
+
+app.post('/api/restaurant/getAll', function (req, res) {
+  console.log("Restaurant getAll");
+  //console.log(JSON.stringify(req.body));
+  let sql = `SELECT * FROM Restaurant`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get all restaurants", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        res.status(200).send({ code: 200, message: "Restaurant Get All Successful", restaurants: result });
+      } else {
+        res.status(400).send({ code: 400, message: "Restaurant Get All Failed" });
+      }
+    }
+  });
+});
 
 //add restaurant menu item
 app.post('/api/restaurant/menu/add', function (req, res) {
@@ -157,6 +195,46 @@ app.post('/api/restaurant/menu/delete', function (req, res) {
         res.status(200).send({ code: 200, message: "Menu Item Delete Successful" });
       } else {
         res.status(400).send({ code: 400, message: "Menu Item Delete Failed" });
+      }
+    }
+  });
+});
+
+app.post('/api/restaurant/menu/get', function (req, res) {
+  console.log("Restaurant menu get");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  let sql = `SELECT * FROM Menu_Item WHERE id = '${id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get menu item", error: err });
+    } else { 
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result[0] });
+      } else {
+        res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
+      }
+    }
+  });
+});
+
+app.post('/api/restaurant/menu/getAllForRestaurant', function (req, res) {
+  console.log("Restaurant menu getAllForRestaurant");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let sql = `SELECT * FROM Menu_Item WHERE restaurant_id = '${restaurant_id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get all menu items for restaurant", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        res.status(200).send({ code: 200, message: "Menu Item Get All For Restaurant Successful", menu_items: result });
+      } else {
+        res.status(400).send({ code: 400, message: "Menu Item Get All For Restaurant Failed" });
       }
     }
   });

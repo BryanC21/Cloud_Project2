@@ -66,6 +66,65 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
+`POST /api/restaurant/get` - Get a restaurant by ID
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to get Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "restaurant": {
+        "id": INT "ID of the restaurant created Ex. 1",
+        "name": "Restaurant Name",
+        "description": "Restaurant Description Ex: A restaurant that serves italian food",
+        "logo": "Link to image for logo",
+        "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
+        "creation_time": TIMESTAMP "Time the restaurant was created",
+        "update_time": TIMESTAMP "Time the restaurant was last updated",
+      }
+  }
+  ```
+`POST /api/restaurant/getAll` - Get all restaurants
+  Request: 
+  ```
+  {
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "restaurants": [
+        {
+          "id": INT "ID of the restaurant created Ex. 1",
+          "name": "Restaurant Name",
+          "description": "Restaurant Description Ex: A restaurant that serves italian food",
+          "logo": "Link to image for logo",
+          "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
+          "creation_time": TIMESTAMP "Time the restaurant was created",
+          "update_time": TIMESTAMP "Time the restaurant was last updated",
+        },
+        {
+          "id": INT "ID of the restaurant created Ex. 1",
+          "name": "Restaurant Name",
+          "description": "Restaurant Description Ex: A restaurant that serves italian food",
+          "logo": "Link to image for logo",
+          "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
+          "creation_time": TIMESTAMP "Time the restaurant was created",
+          "update_time": TIMESTAMP "Time the restaurant was last updated",
+        },
+        ...
+      ]
+  }
+  ```
 
 Menu Routes  
 Types are Strings unless otherwise specified
@@ -120,5 +179,30 @@ Types are Strings unless otherwise specified
   {
     "code": 200/400,
     "Message": "Success/Error Message"",
+  }
+  ```
+`POST /api/menu/get` - Get a menu item by ID
+  Request: 
+  ```
+  {
+    "menu_id": INT "ID of the menu item to get Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "menu": {
+        "id": INT "ID of the menu item created Ex. 1",
+        "name": "Item Name",
+        "description": "Item Description Ex: A delicious pizza",
+        "price": "Price of the item Ex. 12.99",
+        "image": "Link to image",
+        "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+        "creation_time": TIMESTAMP "Time the menu item was created",
+        "update_time": TIMESTAMP "Time the menu item was last updated",
+      }
   }
   ```
