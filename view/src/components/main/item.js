@@ -34,8 +34,8 @@ class Item extends React.Component {
                     item={this.state.item}
                 />
                 <div style={imgDivStyle}>
-                        <Image className="card-img-top img-fluid" src={data.img} alt="Card image cap" style={imgStyle} />
-                    </div>
+                    <Image className="card-img-top img-fluid" src={data.image} alt="Card image cap" style={imgStyle} />
+                </div>
                 <Card.Body>
                     <Card.Title as="h5">{data.name}</Card.Title>
                     <Card.Text>${data.price}</Card.Text>

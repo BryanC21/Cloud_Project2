@@ -23,10 +23,9 @@ class RestaurantList extends Component {
             .then((response) => response.json())
             .then((data) => {
                 if (data.code === 200) {
-                    const restaurants = data.restaurants;
-                    this.setState({ restaurants, restaurants });
+                    this.setState({ restaurants: data.restaurants });
                 } else {
-                    alert(data.Message);
+                    alert(data.message);
                 }
             });
     }

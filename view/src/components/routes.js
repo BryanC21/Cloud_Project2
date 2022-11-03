@@ -22,6 +22,7 @@ class routes extends Component {
             },
             //restaurant: null,
             restaurant: {
+                id: 1,
                 name: 'KFC',
                 logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png',
                 description: 'This is KFC',
@@ -41,7 +42,7 @@ class routes extends Component {
                     <>
                         <Route exact path="/" element={<Admin user={this.state.user} setUser={this.setUser} restaurant={this.state.restaurant }/>} />
                         <Route exact path="/admin-menu" element={<AdminMenu user={this.state.user} setUser={this.setUser} restaurant={this.state.restaurant} />} />
-                        <Route exact path="/update-restaurant" element={<ManageRestaurant user={this.state.user} restaurant={this.state.restaurant} />} />
+                        <Route exact path="/update-restaurant" element={<ManageRestaurant user={this.state.user} restaurant={this.state.restaurant} operation="add"/>} />
                     </>
                     :
                     <>

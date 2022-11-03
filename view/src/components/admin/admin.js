@@ -13,7 +13,7 @@ class Admin extends Component {
         this.setRestaurant = this.setRestaurant.bind(this);
     }
     setRestaurant(restaurant) {
-        this.setState({ restaurant, restaurant })
+        this.setState({ restaurant: restaurant })
     }
 
     render() {
@@ -31,7 +31,7 @@ class Admin extends Component {
                     </>
                     : 
                     <>
-                        <ManageRestaurant user={this.props.user} setRestaurant={this.setRestaurant}  />
+                        <ManageRestaurant user={this.props.user} setRestaurant={this.setRestaurant} operation="upload" />
                     </>
                 }
             </>

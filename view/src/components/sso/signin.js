@@ -33,7 +33,14 @@ class Signin extends React.Component {
             .then((data) => {
                 if (data.status === 200) {
                     sessionStorage.setItem("token", data.body.token);
-                    this.props.setUser(data.body.user);
+                    const user = {
+                        phone: data.body.user.mobile_number,
+                        username: data.body.user.username,
+                        firstName: data.body.user.first_name,
+                        lastName: data.body.user.last_name,
+                        level: data.body.user.level,
+                    }
+                    this.props.setUser(user);
                     this.props.setModalShow(false);
                 } else {
                     alert(data.body.message);

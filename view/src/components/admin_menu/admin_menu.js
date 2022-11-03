@@ -11,13 +11,39 @@ class AdminMain extends Component {
         super(props);
         this.state = {
             restaurant: this.props.restaurant,
+            items: [],
         }
+        this.getMenu();
+        this.getMenu = this.getMenu.bind(this);
+    }
+    getMenu() {
+        const api = process.env.API || "http://192.168.56.1:4080"
+        fetch(api + "/api/restaurant/menu/getAllForRestaurant",
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'restaurant_id': this.state.restaurant.id,
+                }),
+            }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.code === 200) {
+                    const items = data.menu_items;
+                    this.setState({ items, items });
+                } else {
+                    alert(data.message);
+                }
+            });
     }
 
     render() {
         return (
             <>
-                <AdminNav user={this.props.user} restaurant={this.state.restaurant } />
+                <AdminNav user={this.props.user} restaurant={this.state.restaurant} />
                 <br />
                 <Container className="mb-5">
                     <h2>Categories</h2>
@@ -25,15 +51,7 @@ class AdminMain extends Component {
                 </Container>
                 <Container className="mb-5">
                     <h2>Items</h2>
-                    <Row>
-                    {items && items.length ? items.map((item, index) => (
-                        <Col xs="12" lg="3">
-                            <Item item={item} categories={categories } />
-                        </Col>
-                    ))
-                        : {}
-                        }
-                    </Row>
+                    <Item categories={categories} items={this.state.items} restaurant={this.state.restaurant} getMenu={this.getMenu }/>
                 </Container>
                 <br />
             </>

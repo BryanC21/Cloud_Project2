@@ -32,10 +32,9 @@ class Main extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 if (data.code === 200) {
-                    const restaurant = data.restaurant;
-                    this.setState({ restaurant, restaurant });
+                    this.setState({ restaurant: data.restaurant });
                 } else {
-                    alert(data.Message);
+                    alert(data.message);
                 }
             });
     }

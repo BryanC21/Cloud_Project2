@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\view",
+    "\\view\\src",
+    "\\view\\src\\components",
+    "\\view\\src\\components\\admin",
+    "\\view\\src\\components\\admin_menu",
+    "\\view\\src\\components\\data",
+    "\\view\\src\\components\\main",
+    "\\view\\src\\components\\nav",
+    "\\view\\src\\components\\sso"
+  ],
+  "SelectedNode": "\\view\\src\\components\\admin_menu\\item.js",
+  "PreviewInSolutionExplorer": false
+}

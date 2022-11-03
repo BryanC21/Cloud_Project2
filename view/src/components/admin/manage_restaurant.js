@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Form, Container } from "react-bootstrap";
 
 class ManageRestaurant extends React.Component {
@@ -6,7 +7,6 @@ class ManageRestaurant extends React.Component {
         super(props);
         if (this.props.restaurant) {
             this.state = {
-                word: "Update",
                 id: this.props.restaurant.id,
                 name: this.props.restaurant.name,
                 logo: this.props.restaurant.logo,
@@ -15,10 +15,10 @@ class ManageRestaurant extends React.Component {
             }
         } else {
             this.state = {
-                word: "Register",
                 logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png"
             }
         }
+        this.setState({ operation: this.props.operation });
     }
 
     handleRestaurantNameChange(e) {
@@ -41,67 +41,76 @@ class ManageRestaurant extends React.Component {
         }
     }
 
-    handleRegister(e) {
-        if (this.state.word === "update") {
-            const api = process.env.API || "http://192.168.56.1:4080"
-            const restaurant = {
+    handleRegister() {
+        var api = process.env.API || "http://192.168.56.1:4080"
+        var api_path = "/api/restaurant/register";
+        var restaurant = {
+            name: this.state.name,
+            logo: this.state.logo,
+            description: this.state.description,
+            ownerId: this.props.user.id,
+        };
+        if (this.props.operation === "update") {
+            api_path = "/api/restaurant/update";
+
+            restaurant = {
                 id: this.state.id,
                 name: this.state.name,
                 logo: this.state.logo,
                 description: this.state.description,
             };
-            fetch(api + "/api/restaurant/update",
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(restaurant),
-                }
-            )
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.code === 200) {
-                        restaurant.id = data.restaurantId
-                        this.props.setRestaurant(restaurant);
-                    } else {
-                        alert(data.Message);
-                    }
-                });
-        } else {
-            const api = process.env.API || "http://192.168.56.1:4080"
-            const restaurant = {
-                name: this.state.name,
-                logo: this.state.logo,
-                description: this.state.description,
-                ownerId: this.props.user.id,
-            };
-            fetch(api + "/api/restaurant/register",
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(restaurant),
-                }
-            )
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.code === 200) {
-                        restaurant.id = data.restaurantId
-                        this.props.setRestaurant(restaurant);
-                    } else {
-                        alert(data.Message);
-                    }
-                });
         }
-        
+
+        fetch(api + api_path,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(restaurant),
+            }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.code === 200) {
+                    restaurant.id = data.restaurantId
+                    this.props.setRestaurant(restaurant);
+                } else {
+                    alert(data.message);
+                }
+            });
+    }
+
+    handleDelete() {
+        console.log(this.state);
+        const api = process.env.API || "http://192.168.56.1:4080"
+        const restaurant = {
+            id: this.state.id,
+        };
+        fetch(api + "/api/restaurant/delete",
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(restaurant),
+            }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.code === 200) {
+                    alert(data.message);
+                    window.location = '/';
+                } else {
+                    alert(data.message);
+                }
+            });
     }
 
     render() {
         return (
             <Container>
-                <h2 className="text-center">{this.state.word} Your Restaurant</h2><br/>
+                <h2 className="text-center">{this.state.operation} Your Restaurant</h2><br />
                 <Form>
                     <Form.Group className="my-3" controlId="restaurantName">
                         <Form.Label>Restaurant Name</Form.Label>
@@ -120,9 +129,18 @@ class ManageRestaurant extends React.Component {
                         <Form.Control as="textarea" className="form-control" rows="3" defaultValue={this.state.description} onChange={e => this.handleDescriptionChange(e)} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="registerCheckbox">
-                        <Form.Check type="checkbox" label="I have read and agree to the terms" checked={this.state.agree} onClick={e => this.handleAgreeChange()} />
+                        <Form.Check type="checkbox" label="I have read and agree to the terms" checked={this.state.agree} onClick={() => this.handleAgreeChange()} />
                     </Form.Group>
-                    <Button variant="primary" onClick={e => this.handleRegister(e)}>{this.state.word}</Button>
+                    {this.state.operation === "update" ?
+                        <>
+                            <Button variant="primary" className="me-3" onClick={() => this.handleRegister()}>Update</Button>
+                            <Button variant="primary" variant="danger" onClick={() => this.handleDelete()}>Delete Restaurant</Button>
+                        </>
+                        :
+                        <>
+                            <Button variant="primary" className="me-3" onClick={() => this.handleRegister()}>Register</Button>
+                        </>
+                    }
                 </Form>
             </Container>
         )
