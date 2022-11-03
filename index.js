@@ -110,6 +110,26 @@ app.post('/api/restaurant/get', function (req, res) {
   });
 });
 
+app.post('/api/restaurant/getByOwnerID', function (req, res) {
+  console.log("Restaurant get");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  let sql = `SELECT * FROM Restaurant WHERE owner_id = '${id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get restaurant", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        res.status(200).send({ code: 200, message: "Restaurant Get Successful", restaurant: result[0] });
+      } else {
+        res.status(404).send({ code: 404, message: "Restaurant Not Found" });
+      }
+    }
+  });
+});
+
 app.post('/api/restaurant/getAll', function (req, res) {
   console.log("Restaurant getAll");
   //console.log(JSON.stringify(req.body));

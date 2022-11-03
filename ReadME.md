@@ -90,6 +90,30 @@ Types are Strings unless otherwise specified
       }
   }
   ```
+`POST /api/restaurant/getByOwnerID` - Get a restaurant by ID of the User that owns it  
+  Request: 
+  ```
+  {
+    "id": INT "ID of the user to get Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400/404,
+    "Message": "Success/Error Message/No restaurant found for that user"",
+    if sucessful:
+      "restaurant": {
+        "id": INT "ID of the restaurant created Ex. 1",
+        "name": "Restaurant Name",
+        "description": "Restaurant Description Ex: A restaurant that serves italian food",
+        "logo": "Link to image for logo",
+        "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
+        "creation_time": TIMESTAMP "Time the restaurant was created",
+        "update_time": TIMESTAMP "Time the restaurant was last updated",
+      }
+  }
+```
 `POST /api/restaurant/getAll` - Get all restaurants  
   Request: 
   ```
