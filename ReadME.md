@@ -129,7 +129,7 @@ Types are Strings unless otherwise specified
 Menu Routes  
 Types are Strings unless otherwise specified
 -------------------
-`POST /api/menu/add` - Add a new menu item  
+`POST /api/restaurant/menu/add` - Add a new menu item  
   Request: 
   ```
   {
@@ -149,7 +149,7 @@ Types are Strings unless otherwise specified
       "menu_id": INT "ID of the menu item created Ex. 1"
   }
   ```
-`POST /api/menu/update` - Update a menu item. Must Pass in all attributes. If you arent changing one pass in the old one.  
+`POST /api/restaurant/menu/update` - Update a menu item. Must Pass in all attributes. If you arent changing one pass in the old one.  
   Request: 
   ```
   {
@@ -167,7 +167,7 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
-`POST /api/menu/delete` - Delete a menu item by ID  
+`POST /api/restaurant/menu/delete` - Delete a menu item by ID  
   Request: 
   ```
   {
@@ -181,7 +181,7 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
-`POST /api/menu/get` - Get a menu item by ID  
+`POST /api/restaurant/menu/get` - Get a menu item by ID  
   Request: 
   ```
   {
@@ -194,7 +194,7 @@ Types are Strings unless otherwise specified
     "code": 200/400,
     "Message": "Success/Error Message"",
     if sucessful:
-      "menu": {
+      "menu_item": {
         "id": INT "ID of the menu item created Ex. 1",
         "name": "Item Name",
         "description": "Item Description Ex: A delicious pizza",
@@ -206,7 +206,7 @@ Types are Strings unless otherwise specified
       }
   }
   ```
-`POST /api/menu/getAllForRestaurant` - Get all menu items  
+`POST /api/restaurant/menu/getAllForRestaurant` - Get all menu items  
   Request: 
   ```
   {
@@ -219,7 +219,7 @@ Types are Strings unless otherwise specified
     "code": 200/400,
     "Message": "Success/Error Message"",
     if sucessful:
-      "menus": [
+      "menus_items": [
         {
           "id": INT "ID of the menu item created Ex. 1",
           "name": "Item Name",
