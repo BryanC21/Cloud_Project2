@@ -41,7 +41,6 @@ Types are Strings unless otherwise specified
     "name": "Restaurant Name",
     "description": "Restaurant Description Ex: A restaurant that serves italian food",
     "logo": "Link to image for logo",
-    "owner_id": INT "User ID of owner account. Can use 1 for the default user"",
   }
   ```
   Response: 

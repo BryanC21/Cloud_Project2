@@ -52,8 +52,7 @@ app.post('/api/restaurant/update', function (req, res) {
   let name = req.body.name;
   let description = req.body.description;
   let logo = req.body.logo;
-  let owner_id = req.body.owner_id;
-  let sql = `UPDATE Restaurant SET name = '${name}', description = '${description}', logo = '${logo}', owner_id = '${owner_id}' WHERE id = '${id}'`;
+  let sql = `UPDATE Restaurant SET name = '${name}', description = '${description}', logo = '${logo}' WHERE id = '${id}'`;
   con.query(sql, function (err, result) {
     if (err) {
       console.log(err);
