@@ -161,6 +161,7 @@ Types are Strings unless otherwise specified
     "price": "Price of the item Ex. 12.99",
     "image": "Link to image",
     "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+    "category": [strings...] or "string, separated, by, commas",
   }
   ```
   Response: 
@@ -172,7 +173,7 @@ Types are Strings unless otherwise specified
       "menu_id": INT "ID of the menu item created Ex. 1"
   }
   ```
-`POST /api/restaurant/menu/update` - Update a menu item. Must Pass in all attributes. If you arent changing one pass in the old one.  
+`POST /api/restaurant/menu/update` - Update a menu item. Must Pass in all attributes. If you arent changing one pass in the old one. Update with attributes is different route below 
   Request: 
   ```
   {
@@ -229,7 +230,7 @@ Types are Strings unless otherwise specified
       }
   }
   ```
-`POST /api/restaurant/menu/getAllForRestaurant` - Get all menu items  
+`POST /api/restaurant/menu/getAllForRestaurant` - Get all menu items. DOESNT INCLUDE CATEGORIES
   Request: 
   ```
   {
@@ -267,3 +268,88 @@ Types are Strings unless otherwise specified
       ]
   }
   ```
+`New Menu Routes that include Categories`
+
+`POST /api/restaurant/category/get` - returns all the categories for a restaurant
+  Request: 
+  ```
+  {
+    "id": INT "ID of the restaurant to get categories for Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200,
+    "message": "Menu Item Get Successful",
+    "menu_item": [
+        {
+            "name": "Recommended",
+        },
+        {
+            "name": "Sides",
+        },
+        ...
+    ]
+}
+  ```
+
+`POST /api/restaurant/menu/updateWithCategory` - Same as update but with an extra parameter for category
+  Request: 
+  ```
+  {
+    "id": INT "ID of the menu item to update Ex. 1",
+    "name": "Item Name",
+    "description": "Item Description Ex: A delicious pizza",
+    "price": "Price of the item Ex. 12.99",
+    "image": "Link to image",
+    "category": [strings...] or "string, separated, by, commas",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
+
+  `POST /api/restaurant/menu/getSorted` - Get all menu items for a restaurant along with categories
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to get menu items for Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "menus_items": [
+        {
+          "category": "Recommended",
+          "id": INT "ID of the menu item created Ex. 1",
+          "name": "Item Name",
+          "description": "Item Description Ex: A delicious pizza",
+          "price": "Price of the item Ex. 12.99",
+          "image": "Link to image",
+          "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+          "creation_time": TIMESTAMP "Time the menu item was created",
+          "update_time": TIMESTAMP "Time the menu item was last updated",
+        },
+        {
+          "category": "Sides",
+          "id": INT "ID of the menu item created Ex. 1",
+          "name": "Item Name",
+          "description": "Item Description Ex: A delicious pizza",
+          "price": "Price of the item Ex. 12.99",
+          "image": "Link to image",
+          "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
+          "creation_time": TIMESTAMP "Time the menu item was created",
+          "update_time": TIMESTAMP "Time the menu item was last updated",
+        },
+        ...
+      ]
+  }

@@ -366,17 +366,17 @@ app.post('/api/restaurant/category/get', function (req, res) {
   console.log("Restaurant category get");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
-  let sql = `SELECT * FROM Category WHERE restaurant = '${id}'`;
+  let sql = `SELECT DISTINCT(name) FROM Category WHERE restaurant = '${id}'`;
   con.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(400).send({ code: 400, message: "Failed to get menu item", error: err });
+      res.status(400).send({ code: 400, message: "Failed to get Category", error: err });
     } else {
       console.log("Result: " + JSON.stringify(result));
       if (result.length != 0) {
-        res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result });
+        res.status(200).send({ code: 200, message: "Category Get Successful", menu_item: result });
       } else {
-        res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
+        res.status(400).send({ code: 400, message: "Category Get Failed" });
       }
     }
   });
