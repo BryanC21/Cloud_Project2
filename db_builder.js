@@ -75,7 +75,7 @@ logo VARCHAR(255), \
 owner_id INT NOT NULL, \
 creation_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
 update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \
-PRIMARY KEY (id), FOREIGN KEY (owner_id) REFERENCES User(id))";
+PRIMARY KEY (id), FOREIGN KEY (owner_id) REFERENCES User(id) ON DELETE CASCADE)";
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("TABLE Restaurant created");
@@ -102,11 +102,46 @@ price VARCHAR(255) NOT NULL, \
 restaurant_id INT NOT NULL, \
 creation_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
 update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \
-PRIMARY KEY (id), FOREIGN KEY (restaurant_id) REFERENCES Restaurant(id))";
+PRIMARY KEY (id), FOREIGN KEY (restaurant_id) REFERENCES Restaurant(id) ON DELETE CASCADE)";
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("TABLE Menu_Item created");
 });
+
+var sql = "CREATE TABLE Category (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, \
+restaurant INT NOT NULL, menuitem INT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (restaurant) REFERENCES Restaurant(id) \
+ON DELETE CASCADE, FOREIGN KEY (menuitem) REFERENCES Menu_Item(id) ON DELETE CASCADE)";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("TABLE Category created");
+});
+
+/**
+ * Category:
+ * id (mandatory)
+ * name (mandatory)
+ * restaurant id (Restaurant it belongs to) (mandatory)
+ */
+/*var sql = "CREATE TABLE Category (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, \
+restaurant INT NOT NULL, PRIMARY KEY (id))";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("TABLE Category created");
+});*/
+
+/**
+ * MenuItem_Category:
+ * menuitem_id (mandatory)
+ * category_id (mandatory)
+ */
+/*
+var sql = "CREATE TABLE MenuItem_Category (menuitem_id INT NOT NULL, category_id INT NOT NULL, \
+PRIMARY KEY (menu_item_id, category_id), FOREIGN KEY (menuitem_id) REFERENCES Menu_Item(id), FOREIGN KEY (category_id) \
+REFERENCES Category(id))";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("TABLE MenuItem_Category created");
+});*/
 
 //ordering in component 2
   //make order

@@ -151,22 +151,55 @@ app.post('/api/restaurant/getAll', function (req, res) {
 //add restaurant menu item
 app.post('/api/restaurant/menu/add', function (req, res) {
   console.log("Restaurant menu add");
-  //console.log(JSON.stringify(req.body));
+  console.log(JSON.stringify(req.body));
   let name = req.body.name;
   let description = req.body.description;
   let price = req.body.price;
   let image = req.body.image;
   let restaurant_id = req.body.restaurant_id;
+  let categories = req.body.categories; //an array of strings
+  //If a string gets sent in instead of an array, it will be converted to an array
+  if (typeof categories === 'string') {
+    categories = categories.replace(/\s/g, '');
+    categories = categories.split(',');
+  }
+  //Cant allow empty categories
+  if (typeof categories == 'undefined' || !categories || categories.length == 0) {
+    res.status(400).send({ code: 400, message: "Failed to add menu item, no categories" });
+  }
   let sql = `INSERT INTO Menu_Item (name, description, price, image, restaurant_id) VALUES ('${name}', '${description}', '${price}', '${image}', '${restaurant_id}')`;
+
   con.query(sql, function (err, result) {
+
     if (err) {
       console.log(err);
       res.status(400).send({ code: 400, message: "Failed to add menu item", error: err });
-    } else {
-      console.log("Result: " + JSON.stringify(result));
+    }
+    else {
+      //console.log("Result: " + JSON.stringify(result));
       if (result.affectedRows != 0) {
-        res.status(200).send({ code: 200, message: "Menu Item Add Successful", menu_item_id: result.insertId });
-      } else {
+        let sql = `INSERT INTO Category (menuitem, restaurant, name) VALUES `;
+
+        for (let cat of categories) {
+          sql += `('${result.insertId}', '${restaurant_id}', '${cat}'),`;
+        }
+
+        sql = sql.substring(0, sql.length - 1); //Removes Trailing Comma
+        sql += `;`;
+
+        let menuitem_id = result.insertId;
+
+        con.query(sql, function (err, result) {
+          if (err) {
+            console.log(err);
+            res.status(400).send({ code: 400, message: "Failed to add menu item", error: err });
+          } else {
+            res.status(200).send({ code: 200, message: "Menu Item Add Successful", menu_id: menuitem_id });
+          }
+        });
+
+      }
+      else {
         res.status(400).send({ code: 400, message: "Menu Item Add Failed" });
       }
     }
@@ -191,6 +224,73 @@ app.post('/api/restaurant/menu/update', function (req, res) {
       console.log("Result: " + JSON.stringify(result));
       if (result.affectedRows != 0) {
         res.status(200).send({ code: 200, message: "Menu Item Update Successful" });
+      } else {
+        res.status(400).send({ code: 400, message: "Menu Item Update Failed" });
+      }
+    }
+  });
+});
+
+//update restaurant menu item
+app.post('/api/restaurant/menu/updateWithCategory', function (req, res) {
+  console.log("Restaurant menu update with category");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  /*if(typeof id == 'string'){
+    id = parseInt(id);
+  }*/
+  let name = req.body.name;
+  let description = req.body.description;
+  let price = req.body.price;
+  let image = req.body.image;
+  let restaurant_id = req.body.restaurant_id;
+  let categories = req.body.categories; //an array of strings
+  //If a string gets sent in instead of an array, it will be converted to an array
+  if (typeof categories === 'string') {
+    categories = categories.replace(/\s/g, '');
+    categories = categories.split(',');
+  }
+  //Cant allow empty categories
+  if (typeof categories == 'undefined' || !categories || categories.length == 0) {
+    res.status(400).send({ code: 400, message: "Failed to update menu item, no categories" });
+  }
+  let sql = `UPDATE Menu_Item SET name = '${name}', description = '${description}', price = '${price}', image = '${image}' WHERE id = '${id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to update menu item", error: err });
+
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.affectedRows != 0) {
+
+        let sql = `DELETE FROM Category WHERE menuitem = '${id}'`;
+        con.query(sql, function (err, result) {
+          if (err) {
+            console.log(err);
+            res.status(400).send({ code: 400, message: "Failed to update menu item", error: err });
+          } else {
+            let sql = `INSERT INTO Category (menuitem, restaurant, name) VALUES `;
+
+            for (let cat of categories) {
+              sql += `('${id}', '${restaurant_id}', '${cat}'),`;
+            }
+
+            sql = sql.substring(0, sql.length - 1); //Removes Trailing Comma
+            sql += `;`;
+
+            con.query(sql, function (err, result) {
+              if (err) {
+                console.log(err);
+                res.status(400).send({ code: 400, message: "Failed to update menu item", error: err });
+              } else {
+                res.status(200).send({ code: 200, message: "Menu Item Update Successful" });
+              }
+            });
+
+            //res.status(200).send({ code: 200, message: "Menu Item Update Successful" });
+          }
+        });
       } else {
         res.status(400).send({ code: 400, message: "Menu Item Update Failed" });
       }
@@ -228,10 +328,53 @@ app.post('/api/restaurant/menu/get', function (req, res) {
     if (err) {
       console.log(err);
       res.status(400).send({ code: 400, message: "Failed to get menu item", error: err });
-    } else { 
+    } else {
       console.log("Result: " + JSON.stringify(result));
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result[0] });
+      } else {
+        res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
+      }
+    }
+  });
+});
+
+app.post('/api/restaurant/menu/getSorted', function (req, res) {
+  console.log("Restaurant menu get sorted by category");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  let sql = `SELECT Category.name AS category, Menu_Item.* FROM Category \
+  INNER JOIN Menu_Item ON Category.menuitem = Menu_Item.id \
+  WHERE Category.restaurant = ${id}`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get menu item", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        //At this point loop and formtat the result
+        res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result });
+      } else {
+        res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
+      }
+    }
+  });
+});
+
+app.post('/api/restaurant/category/get', function (req, res) {
+  console.log("Restaurant category get");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  let sql = `SELECT * FROM Category WHERE restaurant = '${id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to get menu item", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.length != 0) {
+        res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result });
       } else {
         res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
       }
@@ -274,7 +417,7 @@ app.post('/api', function (req, res) {
 app.get('*', function (req, res) {
   res.send({
     "Output": "This route doesnt exist!"
-  }); 
+  });
 });
 
 app.listen(port, () => console.log(`app listening on http://localhost:${port}`));
