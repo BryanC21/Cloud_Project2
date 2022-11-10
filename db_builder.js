@@ -108,6 +108,13 @@ con.query(sql, function (err, result) {
     console.log("TABLE Menu_Item created");
 });
 
+/**
+ *  Category:
+ * id (mandatory) "Not really used much"
+ * name (mandatory)
+ * restaurant id (Restaurant it belongs to) (mandatory) This is for simpler queries when getting full menus for a restaurant
+ * menu item id (Menu_Item it belongs to) (mandatory) 
+ */
 var sql = "CREATE TABLE Category (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, \
 restaurant INT NOT NULL, menuitem INT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (restaurant) REFERENCES Restaurant(id) \
 ON DELETE CASCADE, FOREIGN KEY (menuitem) REFERENCES Menu_Item(id) ON DELETE CASCADE)";
