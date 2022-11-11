@@ -303,6 +303,7 @@ Types are Strings unless otherwise specified
     "description": "Item Description Ex: A delicious pizza",
     "price": "Price of the item Ex. 12.99",
     "image": "Link to image",
+    "restaurant_id": INT "ID of the restaurant. Need this because of how categories are stored", 
     "category": [strings...] or "string, separated, by, commas",
   }
   ```
