@@ -5,6 +5,16 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 const mysql = require('mysql');
 const con = require('./db_connect.js');
+const multiparty = require("multiparty");
+const AWS = require('aws-sdk');
+const fs = require('fs');
+
+const s3 = new AWS.S3({
+  accessKeyId: "AKIA4WTOXQHLM5HLO7RJ",
+  secretAccessKey: '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',
+  region: 'us-west-1',
+});
+
 
 
 var app = express();
@@ -123,7 +133,7 @@ app.post('/api/restaurant/getByOwnerID', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Restaurant Get Successful", restaurant: result[0] });
       } else {
-        res.status(200).send({ code: 200, message: "Restaurant Not Found", restaurant: {}});
+        res.status(200).send({ code: 200, message: "Restaurant Not Found", restaurant: {} });
       }
     }
   });
@@ -333,11 +343,29 @@ app.post('/api/restaurant/menu/get', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result[0] });
       } else {
-        res.status(200).send({ code: 200, message: "No item found", menu_item: {}});
+        res.status(200).send({ code: 200, message: "No item found", menu_item: {} });
       }
     }
   });
 });
+
+/*
+app.post('/api/restaurant/category/create', function (req, res) {
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let category = req.body.category;
+  let sql = `INSERT INTO Category (restarant, name) VALUES ('${restaurant_id}', '${category}')`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to create", error: err });
+    } else {
+      res.status(200).send({ code: 200, message: "Category Create Successful" });
+      console.log("Result: " + JSON.stringify(result));
+    }
+  });
+});
+*/
 
 app.post('/api/restaurant/menu/getSorted', function (req, res) {
   console.log("Restaurant menu get sorted by category");
@@ -376,7 +404,7 @@ app.post('/api/restaurant/category/get', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Category Get Successful", menu_item: result });
       } else {
-        res.status(200).send({ code: 200, message: "No categories", menu_item: []});
+        res.status(200).send({ code: 200, message: "No categories", menu_item: [] });
       }
     }
   });
@@ -396,9 +424,51 @@ app.post('/api/restaurant/menu/getAllForRestaurant', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Menu Item Get All For Restaurant Successful", menu_items: result });
       } else {
-        res.status(200).send({ code: 200, message: "No menu items found", menu_items: []});
+        res.status(200).send({ code: 200, message: "No menu items found", menu_items: [] });
       }
     }
+  });
+});
+
+app.post(`/api/uploadImage`, function (req, res) {
+  console.log("Upload Image");
+  var message;
+  var form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to upload image", error: err });
+    } 
+    var fields_list = Object.entries(fields);
+    var files_list = Object.entries(files);
+    var file = files_list[0][1][0];
+    //var description = fields_list[0][1];
+    var file_name = fields_list[0][1][0];
+    const file_content = fs.readFileSync(file.path);
+
+    var rand = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < 6; i++ ) {
+        rand += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    file_name = rand + file_name;
+
+    var params = {
+      Body: file_content,
+      Bucket: 'cloud-project2-bucket',
+      Key: file_name
+    };
+
+    s3.upload(params, function (err, data) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to upload image", error: err });
+      }
+      else {
+        res.status(200).send({ code: 200, message: "Image upload successful", data: data });
+      }
+    });
   });
 });
 

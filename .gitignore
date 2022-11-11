@@ -21,5 +21,6 @@ yarn-debug.log*
 yarn-error.log*
 
 notes.txt
+s3test.js
 
 .env

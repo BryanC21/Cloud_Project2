@@ -161,7 +161,7 @@ Types are Strings unless otherwise specified
     "price": "Price of the item Ex. 12.99",
     "image": "Link to image",
     "restaurant_id": INT "ID of the restaurant to add the menu item to Ex. 1",
-    "category": [strings...] or "string, separated, by, commas",
+    "categories": [strings...] or "string, separated, by, commas",
   }
   ```
   Response: 
@@ -314,11 +314,12 @@ Types are Strings unless otherwise specified
   }
   ```
 
-  `POST /api/restaurant/menu/getSorted` - Get all menu items for a restaurant along with categories
+  `POST /api/uploadImage` - upload an image to bucket and returns data along with direct link to image
   Request: 
   ```
   {
-    "restaurant_id": INT "ID of the restaurant to get menu items for Ex. 1",
+    "file": file data,
+    "file_name": "name of file plus extension",
   }
   ```
   Response: 
@@ -353,3 +354,25 @@ Types are Strings unless otherwise specified
         ...
       ]
   }
+
+    `POST /api/restaurant/menu/getSorted` - Get all menu items for a restaurant along with categories
+  Request: 
+  ```
+  {
+    "id": INT "ID of the restaurant to get menu items for Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "message": "Image upload successful",
+    "data": { //raw response from aws
+        "ETag": "\"something\"",
+        "Location": "https://cloud-project2-bucket.s3.us-west-1.amazonaws.com/SU0DO2thing1.png"",
+        "key": "SU0DO2thing1.png", //notice name has 6 random characters added to the front
+        "Key": "SU0DO2thing1.png",
+        "Bucket": "cloud-project2-bucket"
+    }
+  }
+  ```
