@@ -376,7 +376,7 @@ app.post('/api/restaurant/category/get', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Category Get Successful", menu_item: result });
       } else {
-        res.status(400).send({ code: 400, message: "Category Get Failed" });
+        res.status(200).send({ code: 200, message: "No categories", menu_item: []});
       }
     }
   });
