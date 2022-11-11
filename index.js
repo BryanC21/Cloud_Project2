@@ -10,8 +10,8 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 
 const s3 = new AWS.S3({
-  accessKeyId: "AKIA4WTOXQHLM5HLO7RJ",
-  secretAccessKey: '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',
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
   region: 'us-west-1',
 });
 
