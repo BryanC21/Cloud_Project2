@@ -103,7 +103,7 @@ app.post('/api/restaurant/get', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Restaurant Get Successful", restaurant: result[0] });
       } else {
-        res.status(400).send({ code: 400, message: "Restaurant Get Failed" });
+        res.status(200).send({ code: 200, message: "No restaurant found by id", restaurant: {} });
       }
     }
   });
@@ -123,7 +123,7 @@ app.post('/api/restaurant/getByOwnerID', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Restaurant Get Successful", restaurant: result[0] });
       } else {
-        res.status(404).send({ code: 404, message: "Restaurant Not Found" });
+        res.status(200).send({ code: 200, message: "Restaurant Not Found", restaurant: {}});
       }
     }
   });
@@ -142,7 +142,7 @@ app.post('/api/restaurant/getAll', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Restaurant Get All Successful", restaurants: result });
       } else {
-        res.status(400).send({ code: 400, message: "Restaurant Get All Failed" });
+        res.status(200).send({ code: 200, message: "No restaurants", restaurants: [] });
       }
     }
   });
@@ -333,7 +333,7 @@ app.post('/api/restaurant/menu/get', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result[0] });
       } else {
-        res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
+        res.status(200).send({ code: 200, message: "No item found", menu_item: {}});
       }
     }
   });
@@ -356,7 +356,7 @@ app.post('/api/restaurant/menu/getSorted', function (req, res) {
         //At this point loop and formtat the result
         res.status(200).send({ code: 200, message: "Menu Item Get Successful", menu_item: result });
       } else {
-        res.status(400).send({ code: 400, message: "Menu Item Get Failed" });
+        res.status(200).send({ code: 200, message: "No menu items", menu_item: [] });
       }
     }
   });
@@ -396,7 +396,7 @@ app.post('/api/restaurant/menu/getAllForRestaurant', function (req, res) {
       if (result.length != 0) {
         res.status(200).send({ code: 200, message: "Menu Item Get All For Restaurant Successful", menu_items: result });
       } else {
-        res.status(400).send({ code: 400, message: "Menu Item Get All For Restaurant Failed" });
+        res.status(200).send({ code: 200, message: "No menu items found", menu_items: []});
       }
     }
   });
