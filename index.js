@@ -438,37 +438,42 @@ app.post(`/api/uploadImage`, function (req, res) {
     if (err) {
       console.log(err);
       res.status(400).send({ code: 400, message: "Failed to upload image", error: err });
-    } 
-    var fields_list = Object.entries(fields);
-    var files_list = Object.entries(files);
-    var file = files_list[0][1][0];
-    //var description = fields_list[0][1];
-    var file_name = fields_list[0][1][0];
-    const file_content = fs.readFileSync(file.path);
-
-    var rand = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for ( var i = 0; i < 6; i++ ) {
-        rand += characters.charAt(Math.floor(Math.random() * characters.length));
     }
+    try {
+      var fields_list = Object.entries(fields);
+      var files_list = Object.entries(files);
+      var file = files_list[0][1][0];
+      //var description = fields_list[0][1];
+      var file_name = fields_list[0][1][0];
+      const file_content = fs.readFileSync(file.path);
 
-    file_name = rand + file_name;
-
-    var params = {
-      Body: file_content,
-      Bucket: 'cloud-project2-bucket',
-      Key: file_name
-    };
-
-    s3.upload(params, function (err, data) {
-      if (err) {
-        console.log(err);
-        res.status(400).send({ code: 400, message: "Failed to upload image", error: err });
+      var rand = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for (var i = 0; i < 6; i++) {
+        rand += characters.charAt(Math.floor(Math.random() * characters.length));
       }
-      else {
-        res.status(200).send({ code: 200, message: "Image upload successful", data: data });
-      }
-    });
+
+      file_name = rand + file_name;
+
+      var params = {
+        Body: file_content,
+        Bucket: 'cloud-project2-bucket',
+        Key: file_name
+      };
+
+      s3.upload(params, function (err, data) {
+        if (err) {
+          console.log(err);
+          res.status(400).send({ code: 400, message: "Failed to upload image", error: err });
+        }
+        else {
+          res.status(200).send({ code: 200, message: "Image upload successful", data: data });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to upload image", error: err });
+    }
   });
 });
 
