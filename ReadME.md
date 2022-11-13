@@ -230,7 +230,7 @@ Types are Strings unless otherwise specified
       }
   }
   ```
-`POST /api/restaurant/menu/getAllForRestaurant` - Get all menu items. DOESNT INCLUDE CATEGORIES
+`POST /api/restaurant/menu/getAllForRestaurant` - Get all menu items. DOESNT INCLUDE CATEGORIES  
   Request: 
   ```
   {
@@ -270,7 +270,7 @@ Types are Strings unless otherwise specified
   ```
 `New Menu Routes that include Categories`
 
-`POST /api/restaurant/category/get` - returns all the categories for a restaurant
+`POST /api/restaurant/category/get` - returns all the categories for a restaurant  
   Request: 
   ```
   {
@@ -294,7 +294,7 @@ Types are Strings unless otherwise specified
 }
   ```
 
-`POST /api/restaurant/menu/updateWithCategory` - Same as update but with an extra parameter for category
+`POST /api/restaurant/menu/updateWithCategory` - Same as update but with an extra parameter for category  
   Request: 
   ```
   {
@@ -314,13 +314,12 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
-
-  `POST /api/uploadImage` - upload an image to bucket and returns data along with direct link to image
+  
+  `POST /api/restaurant/menu/getSorted` - Get all menu items for a restaurant along with categories  
   Request: 
   ```
   {
-    "file": file data,
-    "file_name": "name of file plus extension",
+    "id": INT "ID of the restaurant to get menu items for Ex. 1",
   }
   ```
   Response: 
@@ -355,12 +354,14 @@ Types are Strings unless otherwise specified
         ...
       ]
   }
+```
 
-    `POST /api/restaurant/menu/getSorted` - Get all menu items for a restaurant along with categories
+`POST /api/uploadImage` - upload an image to bucket and returns data along with direct link to image  
   Request: 
   ```
   {
-    "id": INT "ID of the restaurant to get menu items for Ex. 1",
+    "file": file data,
+    "file_name": "name of file plus extension",
   }
   ```
   Response: 
