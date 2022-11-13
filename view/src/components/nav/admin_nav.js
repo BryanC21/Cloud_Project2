@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import { Nav, Navbar, NavDropdown, Modal, Button, Tab, Tabs, Container, Form } from "react-bootstrap";
 import SSO from '../sso/sso';
+import { connect } from 'react-redux';
+import { isEmpty } from '../utils';
+import { setAdminPage } from '../../actions/adminPageAction';
 
-class TopNav extends Component {
+import store from '../../store';
+
+class AdminNav extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,8 +19,11 @@ class TopNav extends Component {
         this.setState({ modalShow: true });
     }
 
+    handleRedirect(page) {
+        store.dispatch(setAdminPage(page));
+    }
+
     render() {
-        const user = this.props.user;
         const restaurant = this.props.restaurant;
         return (
             <Navbar bg="light" expand="lg" fixed="top">
@@ -24,31 +32,31 @@ class TopNav extends Component {
                         show={this.state.modalShow}
                         onHide={() => this.setState({ modalShow: false })}
                     />
-                    <Navbar.Brand href="#">
+                    <Navbar.Brand href="/">
                         <img
-                            src={restaurant.logo}
+                            src={restaurant ? restaurant.logo : ''}
                             width="30"
                             height="30"
                             className="d-inline-block me-2"
                             alt="React Bootstrap logo"
                         />
-                        {restaurant.name}
+                        {restaurant ? restaurant.name : ''}
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/">Orders</Nav.Link>
-                            <Nav.Link href="/">Tables</Nav.Link>
-                            <Nav.Link href="/admin-menu">Menu</Nav.Link>
+                            <Nav.Link href="#">Orders</Nav.Link>
+                            <Nav.Link href="#">Tables</Nav.Link>
+                            <Nav.Link href="#" onClick={() => this.handleRedirect("menu")}>Menu</Nav.Link>
                         </Nav>
 
                         <Nav>
-                            {user == null ?
+                            {isEmpty(this.props.user) ?
                                 <Nav.Link className='text-danger' onClick={() => this.sso()}>Login</Nav.Link>
                                 :
-                                <NavDropdown title={user.username} id="basic-nav-dropdown">
+                                <NavDropdown title={this.props.user.username} id="basic-nav-dropdown">
                                     <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                                    <NavDropdown.Item href="/update-restaurant">Update Restaurant</NavDropdown.Item>
+                                    <NavDropdown.Item href="#" onClick={() => this.handleRedirect("update_restaurant")} >Update Restaurant</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="">Log Out</NavDropdown.Item>
                                 </NavDropdown>
@@ -61,4 +69,11 @@ class TopNav extends Component {
     }
 }
 
-export default TopNav;
+const mapStateToProps = store => {
+    return {
+        restaurant: store.restaurantState.restaurant,
+        user: store.userState.user,
+    };
+};
+
+export default connect(mapStateToProps)(AdminNav);

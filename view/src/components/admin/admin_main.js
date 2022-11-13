@@ -4,10 +4,6 @@ import Table from '../admin/table';
 import tables from "../data/tables";
 
 class AdminMain extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <>

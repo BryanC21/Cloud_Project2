@@ -15,8 +15,8 @@ class Item extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            ...props,
             modalShow: false,
-            item: { name: 'Error' },
         };
     }
 
@@ -25,22 +25,21 @@ class Item extends React.Component {
     }
 
     render() {
-        const data = this.props.data;
         return (
             <Card className="m-3 p-2">
                 <Popup
                     show={this.state.modalShow}
                     onHide={() => this.setState({ modalShow: false })}
-                    item={this.state.item}
+                    item={this.state.data}
                 />
                 <div style={imgDivStyle}>
-                    <Image className="card-img-top img-fluid" src={data.image} alt="Card image cap" style={imgStyle} />
+                    <Image className="card-img-top img-fluid" src={this.state.data.image} alt="Card image cap" style={imgStyle} />
                 </div>
                 <Card.Body>
-                    <Card.Title as="h5">{data.name}</Card.Title>
-                    <Card.Text>${data.price}</Card.Text>
-                    <Card.Text>{data.description}</Card.Text>
-                    <Button variant="primary" onClick={() => this.popup(data)}>
+                    <Card.Title as="h5">{this.state.data.name}</Card.Title>
+                    <Card.Text>${this.state.data.price}</Card.Text>
+                    <Card.Text>{this.state.data.description}</Card.Text>
+                    <Button variant="primary" onClick={() => this.popup(this.state.data)}>
                         Add To Order
                     </Button>
                 </Card.Body>

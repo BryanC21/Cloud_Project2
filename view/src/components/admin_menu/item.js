@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Image, Button, Card, Row, Col } from "react-bootstrap";
-import PrefPopup from "../admin_menu/pref_popup"
+import ItemPopup from "../admin_menu/item_popup"
 
 const imgDivStyle = {
     width: '100%',
@@ -15,8 +15,13 @@ class Item extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            ...props,
             modalShow: false,
         };
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        this.setState({ ...nextProps });
     }
 
     popup(item) {
@@ -47,7 +52,7 @@ class Item extends React.Component {
                     alert(data.message);
                 }
             });
-        this.props.getMenu();
+        this.state.getMenu();
     }
 
     render() {
@@ -57,20 +62,19 @@ class Item extends React.Component {
                     <>
                         {
                             this.state.modalShow ?
-                                <PrefPopup
+                                <ItemPopup
                                     show={this.state.modalShow}
                                     onHide={() => this.setState({ modalShow: false })}
                                     item={this.state.item}
-                                    categories={this.props.categories}
                                     operation={this.state.operation}
-                                    getMenu={this.props.getMenu}
-                                    restaurant={this.props.restaurant}
+                                    getMenu={this.state.getMenu}
                                 />
                                 :
                                 <></>
                         }
                     </>
-                    {this.props.items && this.props.items.length ? this.props.items.map((item, index) => (
+                    {this.state.items && this.state.items.length ? this.state.items.map((item, index) => (
+                        <Fragment key={`${item}~${index}`}>
                         <Col xs="12" lg="3">
                             <Card className="m-3 p-2 items-body">
                                 <div style={imgDivStyle}>
@@ -90,6 +94,7 @@ class Item extends React.Component {
                                 </Card.Body>
                             </Card>
                         </Col>
+                            </Fragment>
                     ))
                         :
                         <></>

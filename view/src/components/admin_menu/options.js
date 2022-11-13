@@ -6,9 +6,7 @@ import { PlusCircle, XCircle } from 'react-bootstrap-icons';
 class Options extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			data: [...this.props.data],
-		}
+		this.state = { ...props };
 	}
 
 	handleAddFields() {

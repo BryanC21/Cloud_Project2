@@ -3,52 +3,36 @@ import { Row, Container } from "react-bootstrap";
 import CategoryList from '../main/category_list';
 import Menu from '../main/menu';
 import TopNav from '../nav/nav';
-import categories from '../data/categories'
+import { getRestaurant } from '../../actions/restaurantActions';
+import store from '../../store';
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            restaurant: {},
+            loading: true,
         }
-        this.getRestaurant();
     }
 
-    getRestaurant() {
+    async componentDidMount() {
         const searchParams = new URLSearchParams(document.location.search);
-        const restaurantId = searchParams.get('id');
-        const api = process.env.API || "http://192.168.56.1:4080"
-        fetch(api + "/api/restaurant/get",
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    'id': restaurantId,
-                }),
-            }
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.code === 200) {
-                    this.setState({ restaurant: data.restaurant });
-                } else {
-                    alert(data.message);
-                }
-            });
+        await store.dispatch(getRestaurant(searchParams.get('id')));
+        this.setState({ loading: false });
     }
 
     render() {
+        if (this.state.loading) {
+            return <h1>Loading...</h1>;
+        }
         return (
             <>
-                <TopNav user={this.props.user} setUser={this.props.setUser} restaurant={this.state.restaurant} />
+                <TopNav />
                 <br />
 
                 <Container>
-                    <CategoryList data={categories} />
+                    <CategoryList />
                     <Row className='justify-content-end'>
-                        <Menu data={categories} />
+                        <Menu />
                     </Row>
                 </Container>
                 <br />

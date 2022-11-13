@@ -1,18 +1,23 @@
 import React, { Fragment } from "react";
 import { Row, Col, Button } from "react-bootstrap";
-import Popup from "../main/popup"
 import Item from "../main/item";
+import { getMenu } from '../../actions/restaurantActions';
+import store from '../../store';
+import { connect } from 'react-redux';
 
 class Menu extends React.Component {
     constructor(props) {
         super(props);
     }
 
+    componentDidMount() {
+        store.dispatch(getMenu(this.props.restaurant.id, this.props.categories));
+    }
+
     render() {
-        const data = this.props.data;
         return (
             <div className="col-lg-9 pt-5">
-                {data.length ? data.map((categoryItem, index) => (
+                {this.props.menu.length ? this.props.menu.map((categoryItem, index) => (
                     <Fragment key={`${categoryItem}~${index}`}>
                         <Row className='mb-5'>
                             <div><h1 id={"category_" + categoryItem.id}>{categoryItem.name}</h1></div>
@@ -37,4 +42,12 @@ class Menu extends React.Component {
     }
 }
 
-export default Menu;
+const mapStateToProps = store => {
+    return {
+        restaurant: store.restaurantState.restaurant,
+        categories: store.restaurantState.categories,
+        menu: store.restaurantState.menu,
+    }
+}
+
+export default connect(mapStateToProps)(Menu);
