@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Form } from "react-bootstrap";
-import env from "../data/static"
 
 class Signin extends React.Component {
     constructor(props) {

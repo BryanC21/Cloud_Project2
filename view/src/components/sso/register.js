@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Form } from "react-bootstrap";
-import env from "../data/static"
 
 class Register extends React.Component {
     constructor(props) {
@@ -43,12 +42,13 @@ class Register extends React.Component {
     }
 
     handleRegister(e) {
-        fetch(env.sso_url + "/register",
+        const api = process.env.API || "http://192.168.56.1:4080";
+        fetch(api + "/register",
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': env.sso_key,
+                    'x-api-key': "",
                 },
                 body: JSON.stringify({
                     'first_name': this.state.firstName,

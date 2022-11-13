@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Button, Card, Row, Col, Image } from "react-bootstrap";
+import { Card, Row, Col, Image } from "react-bootstrap";
 
 const imgDivStyle = {
     width: '100%',
