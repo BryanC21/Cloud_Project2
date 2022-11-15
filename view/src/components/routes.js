@@ -1,58 +1,82 @@
 import React, { Component } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { Container } from "react-bootstrap";
 import Main from './main/main';
 import CheckoutPage from './checkout/checkout_page';
 import Admin from './admin/admin';
 import AdminMenu from './admin_menu/admin_menu';
 import RestaurantMain from './restaurant/restaurant_main';
 import ManageRestaurant from './admin/manage_restaurant';
+import { getUser } from '../actions/userActions';
+import store from '../store';
+import { connect } from 'react-redux';
+import { isEmpty } from './utils';
 
 class routes extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            //user: null,
-            user: {
-                id: 1,
-                firstName: 'John',
-                lastName: 'Doe',
-                phone: '1234567890',
-                username: 'Test',
-                level: 0,
-            },
-            //restaurant: null,
-            restaurant: {
-                id: 1,
-                name: 'KFC',
-                logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png',
-                description: 'This is KFC',
-                ownerId: 1,
-            },
-        };
-        this.setUser = this.setUser.bind(this);
+    componentDidMount() {
+        if (isEmpty(this.props.user)) {
+            store.dispatch(getUser());
+        }
     }
-    setUser(user) {
-        this.setState({ user: user });
+
+    async autoSignIn() {
+        const token = sessionStorage.getItem("token");
+        const sso_url = process.env.SSO_URL || "https://oyygn6heb6.execute-api.us-west-1.amazonaws.com/prod/";
+        const sso_key = process.env.SSO_KEY || "U3T0Z9LBfY3S8ml1w7amnm20GIwy0kF75MjeXA2i";
+
+        fetch(sso_url + "/verify",
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': sso_key,
+                },
+                body: JSON.stringify({
+                    'token': token,
+                }),
+            }
+        )
+            .then((response) => response.json().then(data => ({ status: response.status, body: data })))
+            .then(async (data) => {
+                if (data.status === 200) {
+                    const user = {
+                        id: data.body.data.data.id,
+                        phone: data.body.data.data.mobile_number,
+                        username: data.body.data.data.username,
+                        firstName: data.body.data.data.first_name,
+                        lastName: data.body.data.data.last_name,
+                        level: data.body.data.data.level,
+                    }
+                    this.setUser(user);
+                } else {
+                    console.log(data.body.message);
+                }
+            });
     }
 
     render() {
         return (
             <Routes>
-                {this.state.user && this.state.user.level === 0 ?
+                {this.props.user && this.props.user.level === 'admin' ?
                     <>
-                        <Route exact path="/" element={<Admin user={this.state.user} setUser={this.setUser} restaurant={this.state.restaurant }/>} />
-                        <Route exact path="/admin-menu" element={<AdminMenu user={this.state.user} setUser={this.setUser} restaurant={this.state.restaurant} />} />
-                        <Route exact path="/update-restaurant" element={<ManageRestaurant user={this.state.user} restaurant={this.state.restaurant} operation="add"/>} />
+                        <Route exact path="/" element={<Admin />} />
                     </>
                     :
                     <>
-                        <Route exact path="/" element={<RestaurantMain user={this.state.user} setUser={this.setUser} />} />
-                        <Route exact path="/restaurant" element={<Main user={this.state.user} setUser={this.setUser} />} />
+                        <Route exact path="/" element={<RestaurantMain />} />
+                        <Route exact path="/restaurant" element={<Main user={this.props.user} setUser={this.setUser} />} />
                     </>
                 }
-                <Route exact path="/checkout" element={<CheckoutPage user={this.state.user} setUser={this.setUser} />} />
+                <Route exact path="/checkout" element={<CheckoutPage user={this.props.user} setUser={this.setUser} />} />
             </Routes>
         )
     }
 }
-export default routes; 
+
+const mapStateToProps = store => {
+    return {
+        user: store.userState.user,
+    }
+}
+
+export default connect(mapStateToProps)(routes); 

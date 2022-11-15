@@ -6,9 +6,7 @@ import { PlusCircle, XCircle } from 'react-bootstrap-icons';
 class Category extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            data: [...this.props.data],
-        }
+        this.state = {...props};
     }
 
     handleAddFields() {
@@ -56,7 +54,7 @@ class Category extends React.Component {
                             </Col>
                         </Fragment>
                     ))
-                        : {}
+                        : <></>
                     }
                 </Row>
                 <Button variant="primary" className="mb-2" onClick={() => this.handleAddFields()} >Add Category</Button><br />

@@ -6,9 +6,7 @@ import Options from "../admin_menu/options"
 class Preference extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            data: [...this.props.data],
-        }
+        this.state = { ...props };
     }
 
     handleAddFields() {

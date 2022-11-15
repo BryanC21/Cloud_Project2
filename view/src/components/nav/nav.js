@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
 import SSO from '../sso/sso';
+import { connect } from 'react-redux';
 
 class TopNav extends Component {
     constructor(props) {
@@ -24,7 +25,6 @@ class TopNav extends Component {
                     <SSO
                         show={this.state.modalShow}
                         onHide={() => this.setState({ modalShow: false })}
-                        setUser={this.props.setUser}
                         setModalShow={this.setModalShow }
                     />
                     <Navbar.Brand href="#">
@@ -63,4 +63,11 @@ class TopNav extends Component {
     }
 }
 
-export default TopNav;
+const mapStateToProps = store => {
+    return {
+        restaurant: store.restaurantState.restaurant,
+        user: store.userState.user,
+    }
+}
+
+export default connect(mapStateToProps)(TopNav);

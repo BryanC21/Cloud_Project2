@@ -1,12 +1,10 @@
 import React from 'react';
 import { Button, Form } from "react-bootstrap";
-import env from "../data/static"
 
 class Signin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-        }
+        this.state = {}
     }
 
     handlePhoneChange(e) {
@@ -16,15 +14,17 @@ class Signin extends React.Component {
         this.setState({ password: e.target.value });
     }
     handleSignin(e) {
-        fetch(env.sso_url + "/login",
+        const sso_url = process.env.SSO_URL || "https://oyygn6heb6.execute-api.us-west-1.amazonaws.com/prod/";
+        const sso_key = process.env.SSO_KEY || "U3T0Z9LBfY3S8ml1w7amnm20GIwy0kF75MjeXA2i";
+        fetch(sso_url + "/login",
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': env.sso_key,
+                    'x-api-key': sso_key,
                 },
                 body: JSON.stringify({
-                    'username': this.state.phone,
+                    'mobile_number': this.state.phone,
                     'password': this.state.password,
                 }),
             }
@@ -34,6 +34,7 @@ class Signin extends React.Component {
                 if (data.status === 200) {
                     sessionStorage.setItem("token", data.body.token);
                     const user = {
+                        id: data.body.user.id,
                         phone: data.body.user.mobile_number,
                         username: data.body.user.username,
                         firstName: data.body.user.first_name,

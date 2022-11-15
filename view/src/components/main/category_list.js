@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
 import { ListGroup, Col } from "react-bootstrap";
+import { connect } from 'react-redux';
 
 class CategoryList extends React.Component {
     render() {
-        const data = this.props.data;
+        const data = this.props.menu;
         return (
             <Col sm className="position-fixed">
                 <ListGroup variant="flush">
@@ -28,4 +29,11 @@ class CategoryList extends React.Component {
     }
 }
 
-export default CategoryList;
+const mapStateToProps = store => {
+    return {
+        restaurant: store.restaurantState.restaurant,
+        menu: store.restaurantState.menu,
+    }
+}
+
+export default connect(mapStateToProps)(CategoryList);

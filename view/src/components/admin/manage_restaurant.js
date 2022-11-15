@@ -1,24 +1,26 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button, Form, Container } from "react-bootstrap";
+import { connect } from 'react-redux';
+import { isEmpty } from '../utils';
+import store from '../../store';
+import { setRestaurant, delRestaurant } from '../../actions/restaurantActions';
 
 class ManageRestaurant extends React.Component {
     constructor(props) {
         super(props);
-        if (this.props.restaurant) {
+        if (!isEmpty(props.restaurant)) {
             this.state = {
-                id: this.props.restaurant.id,
-                name: this.props.restaurant.name,
-                logo: this.props.restaurant.logo,
-                description: this.props.restaurant.description,
-                phone: this.props.restaurant.phone,
-            }
+                id: props.restaurant.id,
+                name: props.restaurant.name,
+                logo: props.restaurant.logo,
+                description: props.restaurant.description,
+                phone: props.restaurant.phone,
+            };
         } else {
-            this.state = {
-                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png"
-            }
+            this.state={
+                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png",
+            };
         }
-        this.setState({ operation: this.props.operation });
     }
 
     handleRestaurantNameChange(e) {
@@ -74,7 +76,7 @@ class ManageRestaurant extends React.Component {
             .then((data) => {
                 if (data.code === 200) {
                     restaurant.id = data.restaurantId
-                    this.props.setRestaurant(restaurant);
+                    store.dispatch(setRestaurant(restaurant));
                 } else {
                     alert(data.message);
                 }
@@ -82,9 +84,8 @@ class ManageRestaurant extends React.Component {
     }
 
     handleDelete() {
-        console.log(this.state);
         const api = process.env.API || "http://192.168.56.1:4080"
-        const restaurant = {
+        var restaurant = {
             id: this.state.id,
         };
         fetch(api + "/api/restaurant/delete",
@@ -99,7 +100,7 @@ class ManageRestaurant extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 if (data.code === 200) {
-                    alert(data.message);
+                    store.dispatch(delRestaurant());
                     window.location = '/';
                 } else {
                     alert(data.message);
@@ -110,7 +111,11 @@ class ManageRestaurant extends React.Component {
     render() {
         return (
             <Container>
-                <h2 className="text-center">{this.state.operation} Your Restaurant</h2><br />
+                {this.props.operation === "add" ? 
+                <h2 className="text-center">Register Your Restaurant</h2>
+                    : 
+                <h2 className="text-center">Update Your Restaurant</h2>
+                }<br />
                 <Form>
                     <Form.Group className="my-3" controlId="restaurantName">
                         <Form.Label>Restaurant Name</Form.Label>
@@ -131,7 +136,7 @@ class ManageRestaurant extends React.Component {
                     <Form.Group className="mb-3" controlId="registerCheckbox">
                         <Form.Check type="checkbox" label="I have read and agree to the terms" checked={this.state.agree} onClick={() => this.handleAgreeChange()} />
                     </Form.Group>
-                    {this.state.operation === "update" ?
+                    {this.props.operation === "update" ?
                         <>
                             <Button variant="primary" className="me-3" onClick={() => this.handleRegister()}>Update</Button>
                             <Button variant="primary" variant="danger" onClick={() => this.handleDelete()}>Delete Restaurant</Button>
@@ -147,4 +152,10 @@ class ManageRestaurant extends React.Component {
     }
 }
 
-export default ManageRestaurant;
+const mapStateToProps = store => {
+    return {
+        restaurant: store.restaurantState.restaurant
+    };
+};
+
+export default connect(mapStateToProps)(ManageRestaurant);

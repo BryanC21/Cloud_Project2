@@ -1,10 +1,7 @@
 import React from 'react';
-import { Row, Container } from "react-bootstrap";
-import CategoryList from '../main/category_list';
-import Menu from '../main/menu';
+import { Container } from "react-bootstrap";
 import RestaurantNav from '../nav/restaurant_nav';
 import RestaurantList from '../restaurant/restaurant_list';
-import restaurants from '../data/restaurants'
 
 class RestaurantMain extends React.Component {
     render() {
@@ -14,7 +11,7 @@ class RestaurantMain extends React.Component {
                 <br />
 
                 <Container>
-                    <RestaurantList data={restaurants} />
+                    <RestaurantList />
                 </Container>
                 <br />
             </>

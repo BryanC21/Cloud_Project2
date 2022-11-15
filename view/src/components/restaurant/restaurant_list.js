@@ -7,30 +7,33 @@ class RestaurantList extends Component {
         super(props);
         this.state = {
             restaurants: [],
+            loading: true,
         }
         this.getRestaurants();
     }
-    getRestaurants() {
-        const api = process.env.API || "http://192.168.56.1:4080"
-        fetch(api + "/api/restaurant/getAll",
+
+    async getRestaurants() {
+        const api = process.env.API || "http://192.168.56.1:4080";
+        const response = await fetch(api + "/api/restaurant/getAll",
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             }
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.code === 200) {
-                    this.setState({ restaurants: data.restaurants });
-                } else {
-                    alert(data.message);
-                }
-            });
+        );
+        const data = await response.json();
+        if (data.code === 200) {
+            this.setState({ restaurants: data.restaurants, loading: false });
+        } else {
+            alert(data.message);
+        }
     }
 
     render() {
+        if (this.state.loading) {
+            return <h1>Loading...</h1>;
+        }
         return (
             <>
                 <Container>
