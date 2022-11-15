@@ -47,7 +47,7 @@ function generateAccessToken(user) {
     },
     process.env.JWT_KEY,
     {
-      expiresIn: "1h"
+      expiresIn: "12h"
     }
   );
   return token;
@@ -71,22 +71,32 @@ function datetime() {
   return output;
 }
 
-app.get("/verify", (req, res) => {
+app.use("/api", (req, res, next) => {
   const token = req.body.token;
   console.log("----------------verifying");
   if (token) {
+    try{
      const decode = jwt.verify(token, process.env.JWT_KEY);
+     req.body.decoded = decode;
      console.log("verified successfully");
-     res.json({
+     /*res.json({
         login: true,
         data: decode
+     });*/
+     next();
+    } catch(err){
+      console.log("Error in verifying");
+      res.json({
+        login: false,
+        message: "Error in verifying"
      });
+    }
   }
   else {
      res.json(
         {
            login: false,
-           data: 'error'
+           data: 'No token provided.'
         })
   }
 });
@@ -524,24 +534,6 @@ app.post('/api/restaurant/menu/get', function (req, res) {
   });
 });
 
-/*
-app.post('/api/restaurant/category/create', function (req, res) {
-  //console.log(JSON.stringify(req.body));
-  let restaurant_id = req.body.restaurant_id;
-  let category = req.body.category;
-  let sql = `INSERT INTO Category (restarant, name) VALUES ('${restaurant_id}', '${category}')`;
-  con.query(sql, function (err, result) {
-    if (err) {
-      console.log(err);
-      res.status(400).send({ code: 400, message: "Failed to create", error: err });
-    } else {
-      res.status(200).send({ code: 200, message: "Category Create Successful" });
-      console.log("Result: " + JSON.stringify(result));
-    }
-  });
-});
-*/
-
 app.post('/api/restaurant/menu/getSorted', function (req, res) {
   console.log("Restaurant menu get sorted by category");
   //console.log(JSON.stringify(req.body));
@@ -568,6 +560,7 @@ app.post('/api/restaurant/menu/getSorted', function (req, res) {
 app.post('/api/restaurant/category/get', function (req, res) {
   console.log("Restaurant category get");
   //console.log(JSON.stringify(req.body));
+  console.log(req.body);
   let id = req.body.id;
   let sql = `SELECT DISTINCT(name) FROM Category WHERE restaurant = '${id}'`;
   con.query(sql, function (err, result) {
