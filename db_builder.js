@@ -124,48 +124,56 @@ con.query(sql, function (err, result) {
 });
 
 //table table
-  // table status: closed (no one there decline orders), open (waiter opens the table for ordering because they have confirmed real people there), 
-  // restaurant id
-  // table_name
-  // id
+// table status: closed (no one there decline orders), open (waiter opens the table for ordering because they have confirmed real people there), 
+// restaurant id
+// table_name
+// id
+var sql = "CREATE TABLE ResTable (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, \
+restaurant_id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (restaurant_id) REFERENCES Restaurant(id) \
+ON DELETE CASCADE)";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("TABLE Table created");
+});
 
-  /**
- * id
- * user id (User it belongs to) (mandatory)
- * restaurant id (Restaurant it belongs to) (mandatory)
+/**
+* id
+* user id (User it belongs to) (mandatory)
+* restaurant id (Restaurant it belongs to) (mandatory)
 user id
 status: *Completed, waiting, cooking, Cancelled
 creation time
 total price
- */
+*/
+var sql = "CREATE TABLE ResOrder (id INT NOT NULL AUTO_INCREMENT, creation_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, total_price VARCHAR(255) NOT NULL, \
+table_id INT NOT NULL, \
+user_id INT NOT NULL, \
+restaurant_id INT NOT NULL, status VARCHAR(255) NOT NULL, \
+PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE, \
+FOREIGN KEY (restaurant_id) REFERENCES Restaurant(id) ON DELETE CASCADE, \
+FOREIGN KEY (table_id) REFERENCES ResTable(id))";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("TABLE Order created");
+});
 
 //order item MtoM
-   //order to item, many to many
-   //oprdrs to item with other stuff
-   //tables have order and tyhey hvave items_orders 
-   //id
-   //order id
-   //item id
-   //quantity
-   //status
-
-
-//ordering 2
-  //make order
-  //update order
-  //get order by id
-  //get all incopmlete orders for a restaurant
-  //get all complete orders for a restaurant
-  //get all orders for a user
-  //get all incomplete orders for a user
-  //get all complete orders for a user
-
-//table management
-  //add table
-  //update table
-  //delete table
-  // open table
-  // close table
+//order to item, many to many
+//oprdrs to item with other stuff
+//tables have order and tyhey hvave items_orders 
+//id
+//order id
+//item id
+//quantity
+//status
+var sql = "CREATE TABLE Order_Item (id INT NOT NULL AUTO_INCREMENT, order_id INT NOT NULL, \
+item_id INT NOT NULL, quantity INT NOT NULL, status VARCHAR(255) NOT NULL, \
+PRIMARY KEY (id), FOREIGN KEY (order_id) REFERENCES ResOrder(id) ON DELETE CASCADE, \
+FOREIGN KEY (item_id) REFERENCES Menu_Item(id) ON DELETE CASCADE)";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("TABLE Order_Item created");
+});
 
 //Inserts
 /*var sql = "INSERT INTO User (first_name, last_name, phone_number, password) VALUES ('John', 'Doe', '1234567890', 'password')";

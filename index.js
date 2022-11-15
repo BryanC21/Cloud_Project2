@@ -71,6 +71,7 @@ function datetime() {
   return output;
 }
 
+//Require authentication to access api
 app.use("/api", (req, res, next) => {
   const token = req.body.token;
   console.log("----------------verifying");
