@@ -8,6 +8,8 @@ const con = require('./db_connect.js');
 const multiparty = require("multiparty");
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -15,7 +17,19 @@ const s3 = new AWS.S3({
   region: 'us-west-1',
 });
 
-
+const DB_HOST = process.env.DATABASE_HOST
+const DB_USER = process.env.DATABASE_USER
+const DB_PASSWORD = process.env.DATABASE_PWD
+const DB_DATABASE = process.env.DATABASE_DATABASE
+const DB_PORT = process.env.DATABASE_PORT
+const db = mysql.createPool({
+  connectionLimit: 100,
+  host: DB_HOST,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_DATABASE,
+  port: DB_PORT
+})
 
 var app = express();
 app.use(cors());
@@ -25,9 +39,170 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //Somewhere in lambda function at the moment
+function generateAccessToken(user) {
+  const token = jwt.sign(
+    {
+      user: user
+
+    },
+    process.env.JWT_KEY,
+    {
+      expiresIn: "1h"
+    }
+  );
+  return token;
+}
+
+app.put("/logout", function (req, res) {
+  res.cookie("jwt", '', { maxAge: 1 })
+  res.send("logged out")
+  //res.redirect('/');
+
+});
+function datetime() {
+  let dt = new Date();
+  let date = ("0" + dt.getDate()).slice(-2);
+  let month = (dt.getMonth() + 1);
+  let year = dt.getFullYear();
+  let hours = dt.getHours();
+  let minutes = dt.getMinutes();
+  let seconds = dt.getSeconds();
+  var output = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+  return output;
+}
+
+app.get("/verify", (req, res) => {
+  const token = req.body.token;
+  console.log("----------------verifying");
+  if (token) {
+     const decode = jwt.verify(token, process.env.JWT_KEY);
+     console.log("verified successfully");
+     res.json({
+        login: true,
+        data: decode
+     });
+  }
+  else {
+     res.json(
+        {
+           login: false,
+           data: 'error'
+        })
+  }
+});
+
 //login route 
+//LOGIN (AUTHENTICATE USER, and return accessToken)
+app.post("/login", (req, res) => {
+  const phone_number = req.body.phone_number;
+  const password = req.body.password
+  db.getConnection(async (err, connection) => {
+    if (err) throw (err)
+    const sql_Search = "Select * from User where phone_number = ?"
+    const search_query = mysql.format(sql_Search, [phone_number])
+    await connection.query(search_query, async (err, result) => {
+      connection.release()
+
+      //if (err) throw (err)
+      if (err) {
+        res.send("user not exist");
+      }
+
+      if (result.length == 0) {
+
+        res.send(result);
+        console.log("--------> User does not exist")
+      }
+      else {
+        const hashedPassword = result[0].password;
+        const first_name = result[0].first_name;
+        const last_name = result[0].last_name;
+        const id = result[0].id;
+        const level = result[0].level;
+        //get the hashedPassword from result
+        if (await bcrypt.compare(password, hashedPassword)) {
+
+          console.log("---------> Login Successful")
+          // res.json({"user info": result})
+          console.log("---------> Generating accessToken")
+          const token = generateAccessToken({ phone_number: phone_number, id: id, first_name: first_name, last_name: last_name, level: level })
+          console.log(token)
+          res.json({ "accessToken ": token, "user info": result })
+          // res.json({"user info": result})
+        } else {
+          res.send("Password incorrect!")
+          console.log("incorrect password")
+        } //end of Password incorrect
+      }//end of User exists
+    }) //end of connection.query()
+  }) //end of db.connection()
+}) //end of app.post()
+
 //register route
-//logout route
+//CREATE USER
+app.post("/createUser", async (req, res) => {
+  console.log("user registration");
+  const time = datetime();
+  const first_name = req.body.first_name;
+  const last_name = req.body.last_name;
+  const phone_number = req.body.phone_number;
+  const password = req.body.password;
+  const reenter_password = req.body.reenter_password;
+  const level = req.body.level;
+  if (phone_number.length != 10) {
+    return res.send("phone number should be 10 digits")
+  }
+  if (!first_name || !last_name || !phone_number || !password || !reenter_password || !level) {
+    return res.send(401, {
+      message: 'required all the fields',
+
+    })
+  }
+  if (reenter_password != password) {
+    return res.send(401, {
+      message: 'password do not match',
+
+    })
+  }
+  if (password.length < 6) {
+    return res.send(401, {
+      message: 'password should be at least 6 characters',
+    })
+  }
+
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+  db.getConnection(async (err, connection) => {
+    if (err) throw (err)
+    const sqlSearch = "SELECT * FROM User WHERE phone_number = ?"
+    const search_query = mysql.format(sqlSearch, [phone_number])
+    const sqlInsert = "INSERT INTO User VALUES (0,?,?,?,?,?,?)"
+    const insert_query = mysql.format(sqlInsert, [first_name, last_name, phone_number, hashedPassword, time, level])
+    await connection.query(search_query, async (err, result) => {
+      if (err) throw (err)
+      console.log("------> Search Results")
+      if (result.length != 0) {
+        connection.release()
+        console.log("------> User already exists")
+        res.sendStatus(409)
+      }
+      else {
+        await connection.query(insert_query, (err, result) => {
+          connection.release()
+          if (err) throw (err)
+          console.log("--------> Registered successfully")
+          console.log(result.insertId)
+          console.log("result: " + JSON.stringify(result))
+          connection.query(search_query, async (err, result) => {
+            if (err) throw (err)
+            res.send("userinfo:" + JSON.stringify(result))
+          })
+          //res.sendStatus(201)
+        })//end of connection.search_query()
+      }
+    }) //end of connection.query()
+  }) //end of db.getConnection()
+}) //end of app.post()
 
 //restaurant register
 app.post('/api/restaurant/register', function (req, res) {

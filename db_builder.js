@@ -48,8 +48,8 @@ password
 creation time
  */
 var sql = "CREATE TABLE User (id INT NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NOT NULL, \
-last_name VARCHAR(255) NOT NULL, phone_number VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL, \
-creation_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(id)) ";
+last_name VARCHAR(255) NOT NULL, phone_number VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL,\
+creation_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, level VARCHAR(10) NOT NULL, PRIMARY KEY(id)) ";
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("TABLE USER created");
@@ -123,44 +123,52 @@ con.query(sql, function (err, result) {
     console.log("TABLE Category created");
 });
 
-/**
- * Category:
- * id (mandatory)
- * name (mandatory)
+//table table
+  // table status: closed (no one there decline orders), open (waiter opens the table for ordering because they have confirmed real people there), 
+  // restaurant id
+  // table_name
+  // id
+
+  /**
+ * id
+ * user id (User it belongs to) (mandatory)
  * restaurant id (Restaurant it belongs to) (mandatory)
+user id
+status: *Completed, waiting, cooking, Cancelled
+creation time
+total price
  */
-/*var sql = "CREATE TABLE Category (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, \
-restaurant INT NOT NULL, PRIMARY KEY (id))";
-con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("TABLE Category created");
-});*/
 
-/**
- * MenuItem_Category:
- * menuitem_id (mandatory)
- * category_id (mandatory)
- */
-/*
-var sql = "CREATE TABLE MenuItem_Category (menuitem_id INT NOT NULL, category_id INT NOT NULL, \
-PRIMARY KEY (menu_item_id, category_id), FOREIGN KEY (menuitem_id) REFERENCES Menu_Item(id), FOREIGN KEY (category_id) \
-REFERENCES Category(id))";
-con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("TABLE MenuItem_Category created");
-});*/
+//order item MtoM
+   //order to item, many to many
+   //oprdrs to item with other stuff
+   //tables have order and tyhey hvave items_orders 
+   //id
+   //order id
+   //item id
+   //quantity
+   //status
 
-//ordering in component 2
+
+//ordering 2
   //make order
   //update order
-  //archive order
-//table management in component 2
+  //get order by id
+  //get all incopmlete orders for a restaurant
+  //get all complete orders for a restaurant
+  //get all orders for a user
+  //get all incomplete orders for a user
+  //get all complete orders for a user
+
+//table management
   //add table
   //update table
   //delete table
+  // open table
+  // close table
 
 //Inserts
-var sql = "INSERT INTO User (first_name, last_name, phone_number, password) VALUES ('John', 'Doe', '1234567890', 'password')";
+/*var sql = "INSERT INTO User (first_name, last_name, phone_number, password) VALUES ('John', 'Doe', '1234567890', 'password')";
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
@@ -176,6 +184,6 @@ var sql = "INSERT INTO Menu_Item (name, description, image, price, restaurant_id
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
-});
+});*/
 
 con.end();
