@@ -491,3 +491,78 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
+
+`POST /api/order/make` - Create a new order  
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to add the order to Ex. 1",
+    "table_id": INT "ID of the table to add the order to Ex. 1",
+    "user_id": INT "ID of the user to add the order to Ex. 1",
+    "status": "Completed, Waiting, Cancelled",
+    "order_items": [
+      {
+        "item_id": INT "ID of the menu item to add to the order Ex. 1",
+        "quantity": INT "Quantity of the menu item to add to the order Ex. 1",
+        "status: "Completed, Waiting, Cancelled", 
+      },
+      ...
+    ]
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "order_id": INT "ID of the order created Ex. 1",
+  }
+  ```
+`POST /api/order/update` - Update an order  
+  Request: 
+  ```
+  {
+    "order_id": INT "ID of the order to update Ex. 1",
+    "status": "Completed, Waiting, Cancelled",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
+
+`POST /api/order/delete` - Delete an order - Avoid using this, want to keep records
+  Request: 
+  ```
+  {
+    "order_id": INT "ID of the order to delete Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
+
+`POST /api/order/item/update` - Update an order item  
+  Request: 
+  ```
+  {
+    "order_item_id": INT "ID of the item to update Ex. 1", //You can grab this where you get the order each order item has an ID
+    "status": "Completed, Waiting, Cancelled",
+    "quantity": INT "Quantity of the menu item to add to the order Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
