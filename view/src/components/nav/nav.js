@@ -53,7 +53,7 @@ class TopNav extends Component {
                             {user == null ?
                                 <Nav.Link className='text-danger' onClick={() => this.setModalShow(true)}>Login</Nav.Link>
                                 :
-                                <NavDropdown title={user.username} id="basic-nav-dropdown">
+                                <NavDropdown title={user.firstName} id="basic-nav-dropdown">
                                     <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="">Log Out</NavDropdown.Item>

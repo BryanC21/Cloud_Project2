@@ -55,8 +55,8 @@ function generateAccessToken(user) {
 
 app.put("/logout", function (req, res) {
   res.cookie("jwt", '', { maxAge: 1 })
-  res.send("logged out")
   //res.redirect('/');
+    res.status(200).send({ code: 200, message: "Logged out" })
 
 });
 function datetime() {
@@ -72,35 +72,35 @@ function datetime() {
 }
 
 //Require authentication to access api
-app.use("/api", (req, res, next) => {
-  const token = req.body.token;
-  console.log("----------------verifying");
-  if (token) {
-    try {
-      const decode = jwt.verify(token, process.env.JWT_KEY);
-      req.body.decoded = decode;
-      console.log("verified successfully");
-      /*res.json({
-         login: true,
-         data: decode
-      });*/
-      next();
-    } catch (err) {
-      console.log("Error in verifying");
-      res.json({
-        login: false,
-        message: "Error in verifying"
-      });
-    }
-  }
-  else {
-    res.json(
-      {
-        login: false,
-        data: 'No token provided.'
-      })
-  }
-});
+//app.use("/api", (req, res, next) => {
+//  const token = req.body.token;
+//  console.log("----------------verifying");
+//  if (token) {
+//    try {
+//      const decode = jwt.verify(token, process.env.JWT_KEY);
+//      req.body.decoded = decode;
+//      console.log("verified successfully");
+//      /*res.json({
+//         login: true,
+//         data: decode
+//      });*/
+//      next();
+//    } catch (err) {
+//      console.log("Error in verifying");
+//      res.json({
+//        login: false,
+//        message: "Error in verifying"
+//      });
+//    }
+//  }
+//  else {
+//    res.json(
+//      {
+//        login: false,
+//        data: 'No token provided.'
+//      })
+//  }
+//});
 
 //login route 
 //LOGIN (AUTHENTICATE USER, and return accessToken)
@@ -112,7 +112,7 @@ db.getConnection ( async (err, connection)=> {
       console.log(err);
       res.status(400).send({code:400,message:"Failed to login",error:err})
 }
- const sql_Search = "Select * from user1 where phone_number = ?"
+ const sql_Search = "Select * from user where phone_number = ?"
  const search_query = mysql.format(sql_Search,[phone_number])
 await connection.query (search_query, async (err, result) => {
 connection.release()
@@ -142,7 +142,7 @@ if (await bcrypt.compare(password, hashedPassword)) {
     console.log("---------> Generating accessToken")
     const token = generateAccessToken({phone_number: phone_number,id:id,first_name: first_name,last_name: last_name,level:level})  
     console.log(token)
-    res.json({code:200,message:"login successful and token generated","accessToken ": token, "user info":result})
+    res.json({code:200,message:"login successful and token generated",accessToken: token, userinfo:result})
    // res.json({"user info": result})
    } else {
     res.status(400).send({code:400,message:"Password Incorrect"})
@@ -172,21 +172,21 @@ if(phone_number.length!=10)
 } 
 if(!first_name ||!last_name||!phone_number||!password||!reenter_password||!level){
    return res.send(401,{
-      error:401, message: 'required all the fields',
+       code:401, message: 'required all the fields',
        
    })
 }
 if(reenter_password!=password)
 {
    return res.send(401,{
-      error:401,message: 'password do not match',
+       code:401,message: 'password do not match',
 
 })
 }
 if(password.length<6)
 {
     return res.send(401,{
-      error:400,message: 'password should be at least 6 characters',
+        code:400,message: 'password should be at least 6 characters',
     })    
 }
 
@@ -194,9 +194,9 @@ const hashedPassword = await bcrypt.hash(req.body.password,10);
 
 db.getConnection( async (err, connection) => {
  if (err) throw (err)
- const sqlSearch = "SELECT * FROM user1 WHERE phone_number = ?"
+ const sqlSearch = "SELECT * FROM user WHERE phone_number = ?"
  const search_query = mysql.format(sqlSearch,[phone_number])
- const sqlInsert = "INSERT INTO user1 VALUES (0,?,?,?,?,?,?)"
+ const sqlInsert = "INSERT INTO user VALUES (0,?,?,?,?,?,?)"
  const insert_query = mysql.format(sqlInsert,[first_name,last_name,phone_number,hashedPassword,time,level])
  await connection.query (search_query, async (err, result) => {
   if (err){
@@ -226,7 +226,7 @@ db.getConnection( async (err, connection) => {
   }
   message={"first_name":first_name,"last_name":last_name,"password":password,"phone_number":phone_number,"level":level,"creation_time":time}
     console.log(message)
-    res.send({ 'code': 200, 'user info':  message,"message":"registration successfull" });
+    res.send({ code: 200, message,"message":"registration successfull" });
    })
    //res.sendStatus(201)
   })//end of connection.search_query()

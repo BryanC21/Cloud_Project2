@@ -1,10 +1,12 @@
 import React from 'react';
 import { Button, Form } from "react-bootstrap";
+import store from '../../store';
+import { setUser } from '../../actions/userActions';
 
 class Signin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
 
     handlePhoneChange(e) {
@@ -13,7 +15,7 @@ class Signin extends React.Component {
     handlePasswordChange(e) {
         this.setState({ password: e.target.value });
     }
-    handleSignin(e) {
+    handleSignin() {
         const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
         fetch(api + "/login",
             {
@@ -29,21 +31,21 @@ class Signin extends React.Component {
         )
             .then((response) => response.json())
             .then((data) => {
-                if (data.status === 200) {
+                console.log(data);
+                if (data.code === 200) {
                     console.log(data.accessToken);
-                    //sessionStorage.setItem("token", data.body.token);
-                    //const user = {
-                    //    id: data.body.user.id,
-                    //    phone: data.body.user.mobile_number,
-                    //    username: data.body.user.username,
-                    //    firstName: data.body.user.first_name,
-                    //    lastName: data.body.user.last_name,
-                    //    level: data.body.user.level,
-                    //}
-                    //this.props.setUser(user);
-                    //this.props.setModalShow(false);
+                    sessionStorage.setItem("token", data.accessToken);
+                    const user = {
+                        id: data.userinfo[0].id,
+                        phone: data.userinfo[0].phone_number,
+                        firstName: data.userinfo[0].first_name,
+                        lastName: data.userinfo[0].last_name,
+                        level: data.userinfo[0].level,
+                    }
+                    store.dispatch(setUser(user));
+                    this.props.setModalShow(false);
                 } else {
-                    alert(data.body.message);
+                    alert(data.message);
                 }
             });
     }
@@ -60,7 +62,7 @@ class Signin extends React.Component {
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={this.state.password || ''} onChange={e => this.handlePasswordChange(e)} />
                 </Form.Group>
-                <Button variant="primary" onClick={e => this.handleSignin(e)}>
+                <Button variant="primary" onClick={() => this.handleSignin()}>
                     Sign In
                 </Button>
             </Form>
