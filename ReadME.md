@@ -718,4 +718,88 @@ Types are Strings unless otherwise specified
   }
   ```
 `POST /api/order/getAllCompleteUser` - same as get all user but only returns completed orders  
-`POST /api/order/getAllIncompleteUser` - same as get all user but only returns incomplete orders
+`POST /api/order/getAllIncompleteUser` - same as get all user but only returns incomplete orders  
+
+`POST /api/order/getAllCompleteTable` - gets all complete orders for a table  
+  Request: 
+  ```
+  {
+    "table_id": INT "ID of the table to get orders for Ex. 1",
+  }
+  ```
+  Response: //same as the other get all complete orders
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "orders": [ // array of orders
+        {
+          "order": {
+            "id": INT "ID of the order created Ex. 1",
+            "restaurant_id": INT "ID of the restaurant to add the order to Ex. 1",
+            "table_id": INT "ID of the table to add the order to Ex. 1",
+            "user_id": INT "ID of the user to add the order to Ex. 1",
+            "status": "Completed, Waiting, Cancelled",
+            "creation_time": "Time the order was created Ex. 2020-04-20 12:00:00",
+          }
+          "order_items": [
+            {
+              "order_item_id": INT "ID of the orderitem"",
+              "quantity": INT "Quantity of the menu item",
+              "status: "Completed, Waiting, Cancelled", 
+              "item_id": INT "ID of the menu item",
+              "name": "Name of the menu item",
+              "price": "Price of the menu item",
+              "description": "Description of the menu item ",
+              "image": "Image of the menu item link",
+            },
+            ...
+          ]
+        },
+        ...
+      ]
+  }
+  ```
+
+`POST /api/order/getAllIncompleteTable` - gets all incomplete orders for a table
+  Request: 
+  ```
+  {
+    "table_id": INT "ID of the table to get orders for Ex. 1",
+  }
+  ```
+  Response: //same as the other get all incomplete orders
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "orders": [ // array of orders
+        {
+          "order": {
+            "id": INT "ID of the order created Ex. 1",
+            "restaurant_id": INT "ID of the restaurant to add the order to Ex. 1",
+            "table_id": INT "ID of the table to add the order to Ex. 1",
+            "user_id": INT "ID of the user to add the order to Ex. 1",
+            "status": "Completed, Waiting, Cancelled",
+            "creation_time": "Time the order was created Ex. 2020-04-20 12:00:00",
+          }
+          "order_items": [
+            {
+              "order_item_id": INT "ID of the orderitem"",
+              "quantity": INT "Quantity of the menu item",
+              "status: "Completed, Waiting, Cancelled", 
+              "item_id": INT "ID of the menu item",
+              "name": "Name of the menu item",
+              "price": "Price of the menu item",
+              "description": "Description of the menu item ",
+              "image": "Image of the menu item link",
+            },
+            ...
+          ]
+        },
+        ...
+      ]
+  }
+  ```
