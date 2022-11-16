@@ -409,6 +409,8 @@ Types are Strings unless otherwise specified
     "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
     "table_name": INT "Table number Ex. 1",
     "table_status": "Empty/In_Use", - if empty orders get declined. Res must set to In_Use when customer is seated to allow orders to pass
+    "description": "Table Description Ex: Table for 2",
+    "capacity": INT "Number of people that can sit at the table Ex. 2",
   }
   ```
   Response: 
@@ -482,6 +484,8 @@ Types are Strings unless otherwise specified
     "table_id": INT "ID of the table Ex. 1",
     "table_name": INT "Table name Ex. Table1",
     "table_status": "Empty/In_Use", - if empty orders get declined. Res must set to In_Use when customer is seated to allow orders to pass
+    "description": "Table Description Ex: Table for 2",
+    "capacity": INT "Number of people that can sit at the table Ex. 2",
   }
   ```
   Response: 
