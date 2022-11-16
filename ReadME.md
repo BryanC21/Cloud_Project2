@@ -10,6 +10,23 @@ To run:
 Routes
 ===================
 User Routes missing for now
+`POST /verify` - takes jwt token returns data in it
+  Request:  
+  ```
+  {
+    "token": "jwt token"
+  }
+  ```  
+  Response:  
+  ```
+  {
+    "login": true,
+    "message": "verified successfully",
+    "data": {
+      userdata: {}//not sure how this looks i didnt make it
+    }
+  }
+  ```
 
 Restaurant Routes  
 Types are Strings unless otherwise specified
