@@ -145,7 +145,7 @@ status: *Completed, waiting, cooking, Cancelled
 creation time
 total price
 */
-var sql = "CREATE TABLE ResOrder (id INT NOT NULL AUTO_INCREMENT, creation_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, total_price VARCHAR(255) NOT NULL, \
+var sql = "CREATE TABLE ResOrder (id INT NOT NULL AUTO_INCREMENT, creation_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
 table_id INT NOT NULL, \
 user_id INT NOT NULL, \
 restaurant_id INT NOT NULL, status VARCHAR(255) NOT NULL, \

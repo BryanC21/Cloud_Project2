@@ -76,29 +76,29 @@ app.use("/api", (req, res, next) => {
   const token = req.body.token;
   console.log("----------------verifying");
   if (token) {
-    try{
-     const decode = jwt.verify(token, process.env.JWT_KEY);
-     req.body.decoded = decode;
-     console.log("verified successfully");
-     /*res.json({
-        login: true,
-        data: decode
-     });*/
-     next();
-    } catch(err){
+    try {
+      const decode = jwt.verify(token, process.env.JWT_KEY);
+      req.body.decoded = decode;
+      console.log("verified successfully");
+      /*res.json({
+         login: true,
+         data: decode
+      });*/
+      next();
+    } catch (err) {
       console.log("Error in verifying");
       res.json({
         login: false,
         message: "Error in verifying"
-     });
+      });
     }
   }
   else {
-     res.json(
-        {
-           login: false,
-           data: 'No token provided.'
-        })
+    res.json(
+      {
+        login: false,
+        data: 'No token provided.'
+      })
   }
 });
 
@@ -231,7 +231,18 @@ app.post('/api/restaurant/register', function (req, res) {
     } else {
       console.log("Result: " + JSON.stringify(result));
       if (result.affectedRows != 0) {
-        res.status(200).send({ code: 200, message: "Restaurant Register Successful", restaurant_id: result.insertId });
+        let restaurant = result.insertId;
+        let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${result.insertId}', 'PICKUP', 'In_Use')`;
+        con.query(sql, function (err, result) {
+          if (err) {
+            console.log(err);
+            res.status(400).send({ code: 400, message: "Failed to register restaurant", error: err });
+          } else {
+            console.log("Result: " + JSON.stringify(result));
+            res.status(200).send({ code: 200, message: "Restaurant Register Successful", restaurant_id: restaurant });
+          }
+        });
+
       } else {
         res.status(400).send({ code: 400, message: "Restaurant Register Failed" });
       }
@@ -647,27 +658,210 @@ app.post(`/api/uploadImage`, function (req, res) {
 });
 
 //ordering 
-  //make order
-  //update order
-  //update order status
-  //get order by id
-  //get all orders for restaurant
-  //get all incopmlete orders for a restaurant
-  //get all complete orders for a restaurant
-  //get all orders for a user
-  //get all incomplete orders for a user
-  //get all complete orders for a user
+//make order
+app.post('/api/order/make', function (req, res) {
+  console.log("Order make");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let user_id = req.body.user_id;
+  let table_id = req.body.table_id;
+  let status = req.body.status;
+
+  let order_items = req.body.order_items; //[] of objects
+
+  let sql = `INSERT INTO ResOrder (restaurant_id, user_id, table_id, status) VALUES ('${restaurant_id}', '${user_id}', '${table_id}', '${status}')`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to make order", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        //Order is made successfully. Time to add order items
+        let order_id = result.insertId;
+        let sql = `INSERT INTO Order_Item (order_id, item_id, quantity, status) VALUES ?`;
+        let values = [];
+        for (let i = 0; i < order_items.length; i++) {
+          values.push([order_id, order_items[i].item_id, order_items[i].quantity, order_items[i].status]);
+        }
+        con.query(sql, [values], function (err, result) {
+          if (err) {
+            console.log(err);
+            res.status(400).send({ code: 400, message: "Failed to make order", error: err });
+          } else {
+            console.log("Result: " + JSON.stringify(result));
+            res.status(200).send({ code: 200, message: "Order make successful", order_id: order_id });
+          }
+        });
+
+      }
+    });
+});
+
+//update order
+app.post('/api/order/update', function (req, res) {
+  console.log("Order update");
+  //console.log(JSON.stringify(req.body));
+  let order_id = req.body.order_id;
+  let status = req.body.status;
+
+  let sql = `UPDATE ResOrder SET status = '${status}' WHERE id = '${order_id}'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to update order", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Order update successful" });
+      }
+    });
+});
+
+//delete order
+app.post('/api/order/delete', function (req, res) {
+  console.log("Order delete");
+  //console.log(JSON.stringify(req.body));
+  let order_id = req.body.order_id;
+  let sql = `DELETE FROM ResOrder WHERE id = '${order_id}'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to delete order", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Order delete successful" });
+      }
+    });
+});
+
+
+//update order item
+app.post('/api/order/item/update', function (req, res) {
+  console.log("Order item update");
+  //console.log(JSON.stringify(req.body));
+  let order_item_id = req.body.order_item_id;
+  let status = req.body.status;
+  let quantity = req.body.quantity;
+
+  let sql = `UPDATE Order_Item SET status = '${status}', quantity = '${quantity}' WHERE id = '${order_item_id}'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to update order item", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Order item update successful" });
+      }
+    });
+});
+
+
+//get order by id
+app.post('/api/order/get', function (req, res) {
+  console.log("Order get");
+  //console.log(JSON.stringify(req.body));
+  let order_id = req.body.order_id;
+  let sql = `SELECT * FROM ResOrder WHERE id = '${order_id}'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        let fullOrder = {
+          order: result[0],
+          order_items: []
+        };
+        let sql = `SELECT Order_Item.quantity, Order_Item.status, Order_Item.id as order_item_id, \
+        Menu_Item.id as item_id, Menu_Item.name, Menu_Item.price, Menu_Item.description, Menu_Item.image \
+        FROM Order_Item \
+        INNER JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id \
+        WHERE Order_Item.order_id = '${order_id}' AND Order_Item.quantity > 0`; //quantity > 0 to avoid deleted items
+        con.query
+          (sql, function (err, result) {
+            if (err) {
+              console.log(err);
+              res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+            } else {
+              console.log("Result: " + JSON.stringify(result));
+              fullOrder.order_items = result;
+              res.status(200).send({ code: 200, message: "Order get successful", order: fullOrder });
+            }
+          });
+
+      }
+    });
+});
+
+//get all orders for restaurant
+app.post('/api/order/getAllRestaurant', function (req, res) {
+  console.log("Order get all restaurant");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get orders", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        //res.status(200).send({ code: 200, message: "Orders get successful", orders: result });
+        let fullOrders = [];
+        let count = result.length;
+        for (let i = 0; i < count; i++) {
+          let fullOrder = {
+            order: result[i],
+            order_items: []
+          };
+          let sql = `SELECT Order_Item.quantity, Order_Item.status, Order_Item.id as order_item_id, \
+          Menu_Item.id as item_id, Menu_Item.name, Menu_Item.price, Menu_Item.description, Menu_Item.image \
+          FROM Order_Item \
+          INNER JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id \
+          WHERE Order_Item.order_id = '${result[i].id}' AND Order_Item.quantity > 0`; //quantity > 0 to avoid deleted items
+          con.query
+            (sql, function (err, result) {
+              if (err) {
+                console.log(err);
+                res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+              } else {
+                console.log("Result: " + JSON.stringify(result));
+                fullOrder.order_items = result;
+                fullOrders.push(fullOrder);
+                if (fullOrders.length >= count) {
+                  res.status(200).send({ code: 200, message: "Orders get successful", orders: fullOrders });
+                }
+              }
+            }
+            );
+        }
+
+      }
+    });
+});
+
+//get all incopmlete orders for a restaurant
+//get all complete orders for a restaurant
+
+//get all orders for a user
+
+//get all incomplete orders for a user
+//get all complete orders for a user
 
 //table management
-  //add table
-  app.post('/api/restaurant/table/add', function (req, res) {
-    console.log("Restaurant table add");
-    //console.log(JSON.stringify(req.body));
-    let restaurant_id = req.body.restaurant_id;
-    let table_name = req.body.table_name;
-    let status = req.body.table_status;
-    let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${restaurant_id}', '${table_name}', '${status}')`;
-    con.query
+//add table
+app.post('/api/restaurant/table/add', function (req, res) {
+  console.log("Restaurant table add");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let table_name = req.body.table_name;
+  let status = req.body.table_status;
+  let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${restaurant_id}', '${table_name}', '${status}')`;
+  con.query
     (sql, function (err, result) {
       if (err) {
         console.log(err);
@@ -677,17 +871,17 @@ app.post(`/api/uploadImage`, function (req, res) {
         res.status(200).send({ code: 200, message: "Table Add Successful", table: result });
       }
     });
-  });
+});
 
-  //update table
-  app.post('/api/restaurant/table/update', function (req, res) {
-    console.log("Restaurant table update");
-    //console.log(JSON.stringify(req.body));
-    let table_id = req.body.table_id;
-    let table_name = req.body.table_name;
-    let status = req.body.table_status;
-    let sql = `UPDATE ResTable SET name = '${table_name}', status = '${status}' WHERE id = '${table_id}'`;
-    con.query
+//update table
+app.post('/api/restaurant/table/update', function (req, res) {
+  console.log("Restaurant table update");
+  //console.log(JSON.stringify(req.body));
+  let table_id = req.body.table_id;
+  let table_name = req.body.table_name;
+  let status = req.body.table_status;
+  let sql = `UPDATE ResTable SET name = '${table_name}', status = '${status}' WHERE id = '${table_id}'`;
+  con.query
     (sql, function (err, result) {
       if (err) {
         console.log(err);
@@ -697,15 +891,15 @@ app.post(`/api/uploadImage`, function (req, res) {
         res.status(200).send({ code: 200, message: "Table Update Successful", table: result });
       }
     });
-  });
+});
 
-  //delete table
-  app.post('/api/restaurant/table/delete', function (req, res) {
-    console.log("Restaurant table delete");
-    //console.log(JSON.stringify(req.body));
-    let table_id = req.body.table_id;
-    let sql = `DELETE FROM ResTable WHERE id = '${table_id}'`;
-    con.query
+//delete table
+app.post('/api/restaurant/table/delete', function (req, res) {
+  console.log("Restaurant table delete");
+  //console.log(JSON.stringify(req.body));
+  let table_id = req.body.table_id;
+  let sql = `DELETE FROM ResTable WHERE id = '${table_id}'`;
+  con.query
     (sql, function (err, result) {
       if (err) {
         console.log(err);
@@ -715,15 +909,15 @@ app.post(`/api/uploadImage`, function (req, res) {
         res.status(200).send({ code: 200, message: "Table Delete Successful", table: result });
       }
     });
-  });
+});
 
-  // get table
-  app.post('/api/restaurant/table/get', function (req, res) {
-    console.log("Restaurant table get");
-    //console.log(JSON.stringify(req.body));
-    let table_id = req.body.table_id;
-    let sql = `SELECT * FROM ResTable WHERE id = '${table_id}'`;
-    con.query
+// get table
+app.post('/api/restaurant/table/get', function (req, res) {
+  console.log("Restaurant table get");
+  //console.log(JSON.stringify(req.body));
+  let table_id = req.body.table_id;
+  let sql = `SELECT * FROM ResTable WHERE id = '${table_id}'`;
+  con.query
     (sql, function (err, result) {
       if (err) {
         console.log(err);
@@ -733,15 +927,15 @@ app.post(`/api/uploadImage`, function (req, res) {
         res.status(200).send({ code: 200, message: "Table Get Successful", table: result });
       }
     });
-  });
+});
 
-  // get tables for restaurant
-  app.post('/api/restaurant/table/getAll', function (req, res) {
-    console.log("Restaurant table get all");
-    //console.log(JSON.stringify(req.body));
-    let restaurant_id = req.body.restaurant_id;
-    let sql = `SELECT * FROM ResTable WHERE restaurant_id = '${restaurant_id}'`;
-    con.query
+// get tables for restaurant
+app.post('/api/restaurant/table/getAll', function (req, res) {
+  console.log("Restaurant table get all");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let sql = `SELECT * FROM ResTable WHERE restaurant_id = '${restaurant_id}'`;
+  con.query
     (sql, function (err, result) {
       if (err) {
         console.log(err);
@@ -751,7 +945,7 @@ app.post(`/api/uploadImage`, function (req, res) {
         res.status(200).send({ code: 200, message: "Tables Get Successful", tables: result });
       }
     });
-  });
+});
 
 app.get('/api', function (req, res) {
   res.send({
