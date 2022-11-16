@@ -104,176 +104,137 @@ app.use("/api", (req, res, next) => {
 
 //login route 
 //LOGIN (AUTHENTICATE USER, and return accessToken)
-app.post("/login", (req, res) => {
-  const phone_number = req.body.phone_number;
-  const password = req.body.password
-  db.getConnection(async (err, connection) => {
-    if (err) throw (err)
-    const sql_Search = "Select * from User where phone_number = ?"
-    const search_query = mysql.format(sql_Search, [phone_number])
-    await connection.query(search_query, async (err, result) => {
-      connection.release()
+app.post("/login", (req, res)=> {
+const phone_number = req.body.phone_number;
+const password = req.body.password
+db.getConnection ( async (err, connection)=> {
+   if (err){
+      console.log(err);
+      res.status(400).send({code:400,message:"Failed to login",error:err})
+}
+ const sql_Search = "Select * from user1 where phone_number = ?"
+ const search_query = mysql.format(sql_Search,[phone_number])
+await connection.query (search_query, async (err, result) => {
+connection.release()
+  
+  //if (err) throw (err)
+  if(err)
+  {
+   res.send("user not exist");
+  }
 
-      //if (err) throw (err)
-      if (err) {
-        res.send("user not exist");
-      }
+if (result.length == 0) {
 
-      if (result.length == 0) {
+   res.json({code:400,message:"user not exist"});
+   console.log("--------> User does not exist")
+  } 
+  else {
+   const hashedPassword = result[0].password;
+   const first_name = result[0].first_name;
+   const last_name = result[0].last_name;
+   const id = result[0].id;
+   const level=result[0].level;
+   //get the hashedPassword from result
+if (await bcrypt.compare(password, hashedPassword)) {
 
-        res.send(result);
-        console.log("--------> User does not exist")
-      }
-      else {
-        const hashedPassword = result[0].password;
-        const first_name = result[0].first_name;
-        const last_name = result[0].last_name;
-        const id = result[0].id;
-        const level = result[0].level;
-        //get the hashedPassword from result
-        if (await bcrypt.compare(password, hashedPassword)) {
-
-          console.log("---------> Login Successful")
-          // res.json({"user info": result})
-          console.log("---------> Generating accessToken")
-          const token = generateAccessToken({ phone_number: phone_number, id: id, first_name: first_name, last_name: last_name, level: level })
-          console.log(token)
-          res.json({ "accessToken ": token, "user info": result })
-          // res.json({"user info": result})
-        } else {
-          res.send("Password incorrect!")
-          console.log("incorrect password")
-        } //end of Password incorrect
-      }//end of User exists
-    }) //end of connection.query()
-  }) //end of db.connection()
+    console.log("---------> Login Successful")
+   // res.json({"user info": result})
+    console.log("---------> Generating accessToken")
+    const token = generateAccessToken({phone_number: phone_number,id:id,first_name: first_name,last_name: last_name,level:level})  
+    console.log(token)
+    res.json({code:200,message:"login successful and token generated","accessToken ": token, "user info":result})
+   // res.json({"user info": result})
+   } else {
+    res.status(400).send({code:400,message:"Password Incorrect"})
+    console.log("incorrect password")
+   } //end of Password incorrect
+}//end of User exists
+}) //end of connection.query()
+}) //end of db.connection()
 }) //end of app.post()
+
 
 //register route
 //CREATE USER
-app.post("/createUser", async (req, res) => {
-  console.log("user registration");
-  const time = datetime();
-  const first_name = req.body.first_name;
-  const last_name = req.body.last_name;
-  const phone_number = req.body.phone_number;
-  const password = req.body.password;
-  const reenter_password = req.body.reenter_password;
-  const level = req.body.level;
-  if (phone_number.length != 10) {
-    return res.send("phone number should be 10 digits")
-  }
-  if (!first_name || !last_name || !phone_number || !password || !reenter_password || !level) {
-    return res.send(401, {
-      message: 'required all the fields',
 
-    })
-  }
-  if (reenter_password != password) {
-    return res.send(401, {
-      message: 'password do not match',
+app.post("/createUser", async (req,res) => {
+   console.log("user registration");
+const time = datetime();
+const first_name = req.body.first_name;
+const last_name = req.body.last_name;
+const phone_number = req.body.phone_number;
+const password = req.body.password;
+const reenter_password = req.body.reenter_password;
+const level=req.body.level;
+if(phone_number.length!=10)
+{
+   return res.send("phone number should be 10 digits")
+} 
+if(!first_name ||!last_name||!phone_number||!password||!reenter_password||!level){
+   return res.send(401,{
+      error:401, message: 'required all the fields',
+       
+   })
+}
+if(reenter_password!=password)
+{
+   return res.send(401,{
+      error:401,message: 'password do not match',
 
-    })
-  }
-  if (password.length < 6) {
-    return res.send(401, {
-      message: 'password should be at least 6 characters',
-    })
-  }
+})
+}
+if(password.length<6)
+{
+    return res.send(401,{
+      error:400,message: 'password should be at least 6 characters',
+    })    
+}
 
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+const hashedPassword = await bcrypt.hash(req.body.password,10); 
 
-  db.getConnection(async (err, connection) => {
-    if (err) throw (err)
-    const sqlSearch = "SELECT * FROM User WHERE phone_number = ?"
-    const search_query = mysql.format(sqlSearch, [phone_number])
-    const sqlInsert = "INSERT INTO User VALUES (0,?,?,?,?,?,?)"
-    const insert_query = mysql.format(sqlInsert, [first_name, last_name, phone_number, hashedPassword, time, level])
-    await connection.query(search_query, async (err, result) => {
-      if (err) throw (err)
-      console.log("------> Search Results")
-      if (result.length != 0) {
-        connection.release()
-        console.log("------> User already exists")
-        res.sendStatus(409)
-      }
-      else {
-        await connection.query(insert_query, (err, result) => {
-          connection.release()
-          if (err) throw (err)
-          console.log("--------> Registered successfully")
-          console.log(result.insertId)
-          console.log("result: " + JSON.stringify(result))
-          connection.query(search_query, async (err, result) => {
-            if (err) throw (err)
-            res.send("userinfo:" + JSON.stringify(result))
-          })
-          //res.sendStatus(201)
-        })//end of connection.search_query()
-      }
-    }) //end of connection.query()
-  }) //end of db.getConnection()
+db.getConnection( async (err, connection) => {
+ if (err) throw (err)
+ const sqlSearch = "SELECT * FROM user1 WHERE phone_number = ?"
+ const search_query = mysql.format(sqlSearch,[phone_number])
+ const sqlInsert = "INSERT INTO user1 VALUES (0,?,?,?,?,?,?)"
+ const insert_query = mysql.format(sqlInsert,[first_name,last_name,phone_number,hashedPassword,time,level])
+ await connection.query (search_query, async (err, result) => {
+  if (err){
+         console.log(err);
+         res.status(400).send({code:400,message:"failed to query",error:err})
+  }
+  console.log("------> Search Results")
+  if (result.length != 0) {
+   connection.release()
+   console.log("------> User already exists")
+   res.send({"code":400,"message:":"user already exists"});
+  } 
+  else {
+
+   await connection.query (insert_query, (err, result)=> {
+   connection.release()
+   if (err) {
+           console.log(err)
+           res.send(400).send({code:400,message:"failed to insert query",error:err})
+   }
+   console.log ("--------> Registered successfully")
+   console.log("result: " + JSON.stringify(result))
+   connection.query(search_query, async(err,result)=>{
+      if (err){
+         console.log(err);
+         res.status(400).send({code:400,message:"failed to search query",error:err})
+  }
+  message={"first_name":first_name,"last_name":last_name,"password":password,"phone_number":phone_number,"level":level,"creation_time":time}
+    console.log(message)
+    res.send({ 'code': 200, 'user info':  message,"message":"registration successfull" });
+   })
+   //res.sendStatus(201)
+  })//end of connection.search_query()
+ }
+}) //end of connection.query()
+}) //end of db.getConnection()
 }) //end of app.post()
 
-//restaurant register
-app.post('/api/restaurant/register', function (req, res) {
-  console.log("Restaurant register");
-  //console.log(JSON.stringify(req.body));
-  let name = req.body.name;
-  let description = req.body.description;
-  let logo = req.body.logo;
-  let owner_id = req.body.owner_id;
-  let sql = `INSERT INTO Restaurant (name, description, logo, owner_id) VALUES ('${name}', '${description}', '${logo}', '${owner_id}')`;
-  con.query(sql, function (err, result) {
-    if (err) {
-      console.log(err);
-      res.status(400).send({ code: 400, message: "Failed to register restaurant", error: err });
-    } else {
-      console.log("Result: " + JSON.stringify(result));
-      if (result.affectedRows != 0) {
-        let restaurant = result.insertId;
-        let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${result.insertId}', 'PICKUP', 'In_Use')`;
-        con.query(sql, function (err, result) {
-          if (err) {
-            console.log(err);
-            res.status(400).send({ code: 400, message: "Failed to register restaurant", error: err });
-          } else {
-            console.log("Result: " + JSON.stringify(result));
-            res.status(200).send({ code: 200, message: "Restaurant Register Successful", restaurant_id: restaurant });
-          }
-        });
-
-      } else {
-        res.status(400).send({ code: 400, message: "Restaurant Register Failed" });
-      }
-
-    }
-  });
-});
-
-//update restaurant
-app.post('/api/restaurant/update', function (req, res) {
-  console.log("Restaurant update");
-  //console.log(JSON.stringify(req.body));
-  let id = req.body.id;
-  let name = req.body.name;
-  let description = req.body.description;
-  let logo = req.body.logo;
-  let sql = `UPDATE Restaurant SET name = '${name}', description = '${description}', logo = '${logo}' WHERE id = '${id}'`;
-  con.query(sql, function (err, result) {
-    if (err) {
-      console.log(err);
-      res.status(400).send({ code: 400, message: "Failed to update restaurant", error: err });
-    } else {
-      console.log("Result: " + JSON.stringify(result));
-      if (result.affectedRows != 0) {
-        res.status(200).send({ code: 200, message: "Restaurant Update Successful" });
-      } else {
-        res.status(400).send({ code: 400, message: "Restaurant Update Failed" });
-      }
-    }
-  });
-});
 
 //delete restaurant
 app.post('/api/restaurant/delete', function (req, res) {
