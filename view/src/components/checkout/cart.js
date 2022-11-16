@@ -1,41 +1,65 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { setMainPage } from "../../actions/pageActions";
+import { setOrder } from "../../actions/orderActions";
 import store from "../../store";
 
 class Cart extends Component {
+    handleQuantityChange(index, quantity) {
+        let temp = JSON.parse(JSON.stringify(this.props.order))
+        temp[index].quantity = quantity;
+        store.dispatch(setOrder(temp));
+    }
+    handleRemove(index) {
+        let temp = JSON.parse(JSON.stringify(this.props.order))
+        temp.splice(index, 1);
+        store.dispatch(setOrder(temp));
+    }
     handleRedirect(page) {
         store.dispatch(setMainPage(page));
     }
 
     render() {
         const cart = this.props.order;
+        console.log(cart);
         return (
             <main className="col-sm-8 col-md-8 col-lg-8 col-xl-8">
                 <div className="items-body">
 
                     {cart.length ?
                         cart.map((item, index) => (
-                            <div className="row cart-item" key={index}>
-                                <div className="col-md-3">
-                                    <img className="img-fluid" src={item.image} alt={item.image} /></div>
-                                <div className="col-md-3 col-sm-3 col-xs-3 col-3" style={{ "padding": '2%' }}>
-                                    <h5 className="text-style-1">{item.name}</h5>
-                                    <p className="text-style-2">${item.price}</p>
-
-                                    {/* counter button  */}
+                            <Row className="cart-item d-flex justify-content-between" key={index}>
+                                <Col md="3">
+                                    <img className="img-fluid" src={item.image} alt={item.image} />
+                                </Col>
+                                <Col className="pt-4" md="3" sm="3" xs="3">
+                                    <Row className="mb-5">
+                                        <Col>
+                                            <h4>{item.name}</h4>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <a className="text-dark" href="#" onClick={()=>this.handleRemove(index)}>Remove</a>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col md="3" className="d-flex justify-content-end pt-4">
                                     <div className="wrapper">
-                                        <span className="minus">-</span>
+                                        <span className="minus" onClick={() => this.handleQuantityChange(index, item.quantity-1) }>-</span>
                                         <span className="num">{item.quantity}</span>
-                                        <span className="plus">+</span>
+                                        <span className="plus" onClick={() => this.handleQuantityChange(index, item.quantity+1)}>+</span>
                                     </div>
-                                </div>
-                            </div>
+                                </Col>
+                                <Col md="2" className="d-flex justify-content-end pt-4 pe-4">
+                                    <p className="text-style-2 float-right">${item.price * item.quantity}</p>
+                                </Col>
+                            </Row>
                         ))
                         : (
-                            <Container>
-                                <div>No items in cart</div>
+                            <Container className="cart-item d-flex justify-content-between">
+                                <h4>No items in cart</h4>
                             </Container>
                         )
                     }

@@ -41,12 +41,31 @@ export const getRestaurant = restaurantId => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'id': restaurantId,
+                id: restaurantId,
             }),
         }
     ).then(response => response.json())
         .then(data => {
             if (data.code === 200) {
+                fetch(api + "/api/restaurant/table/getpickup",
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            restaurant_id: restaurantId,
+                        }),
+                    }
+                ).then(result => result.json())
+                    .then(table => {
+                        if (table.code === 200) {
+                            data.restaurant.pickup = table.table[0];
+                            dispatch(setRestaurant(data.restaurant));
+                        } else {
+                            alert(table.message);
+                        }
+                    })
                 dispatch(setRestaurant(data.restaurant));
             } else {
                 alert(data.message);
@@ -65,7 +84,7 @@ export const getAdminRestaurant = user_id => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'id': user_id,
+                id: user_id,
             }),
         }
     ).then(response => response.json())
@@ -88,7 +107,7 @@ async function getCategories(restaurant_id) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'id': restaurant_id,
+                id: restaurant_id,
             }),
         }
     );
@@ -103,6 +122,7 @@ async function getCategories(restaurant_id) {
 async function getMenuHelper(restaurant_id, dispatch) {
     const api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
     const categories = await getCategories(restaurant_id);
+    console.log(categories);
     fetch(api + "/api/restaurant/menu/getSorted",
         {
             method: 'POST',
@@ -110,7 +130,7 @@ async function getMenuHelper(restaurant_id, dispatch) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'id': restaurant_id,
+                id: restaurant_id,
             }),
         }
     ).then(response => response.json())

@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { Image, Button, Card, Row, Col } from "react-bootstrap";
 import ItemPopup from "../admin_menu/item_popup"
+import { connect } from 'react-redux';
 
 const imgDivStyle = {
     width: '100%',
@@ -40,7 +41,8 @@ class Item extends React.Component {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'id': id,
+                    id: id,
+                    token: this.props.user.token,
                 }),
             }
         )
@@ -106,5 +108,11 @@ class Item extends React.Component {
     }
 }
 
-export default Item;
+const mapStateToProps = store => {
+    return {
+        user: store.userState.user,
+    };
+};
+
+export default connect(mapStateToProps)(Item);
 

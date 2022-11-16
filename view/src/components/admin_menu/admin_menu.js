@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from "react-bootstrap";
+import AdminNav from '../nav/admin_nav';
 import Item from '../admin_menu/item';
 import Category from '../admin_menu/category';
 import { connect } from 'react-redux';
@@ -28,7 +29,8 @@ class AdminMenu extends Component {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'id': this.props.restaurant.id,
+                    id: this.props.restaurant.id,
+                    token: this.props.user.token,
                 }),
             }
         );
@@ -49,7 +51,8 @@ class AdminMenu extends Component {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'id': this.props.restaurant.id,
+                    id: this.props.restaurant.id,
+                    token: this.props.user.token,
                 }),
             }
         );
@@ -78,14 +81,15 @@ class AdminMenu extends Component {
             alert(data.message);
         }
     }
-
+//    <Container className="mb-5">
+//    <h2>Categories</h2>
+//    <Category data={this.state.categories} />
+//</Container>
     render() {
         return (
             <>
-                <Container className="mb-5">
-                    <h2>Categories</h2>
-                    <Category data={this.state.categories} />
-                </Container>
+                <AdminNav />
+                <br/>
                 <Container className="mb-5">
                     <h2>Items</h2>
                     <Item items={this.state.items} getMenu={this.getMenu} />
@@ -97,7 +101,8 @@ class AdminMenu extends Component {
 
 const mapStateToProps = store => {
     return {
-        restaurant: store.restaurantState.restaurant
+        user: store.userState.user,
+        restaurant: store.restaurantState.restaurant,
     };
 };
 

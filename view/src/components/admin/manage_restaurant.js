@@ -67,7 +67,8 @@ class ManageRestaurant extends React.Component {
             name: this.state.name,
             logo: this.state.logo,
             description: this.state.description,
-            ownerId: this.props.user.id,
+            owner_id: this.props.user.id,
+            token: this.props.user.token,
         };
         if (this.props.operation === "update") {
             api_path = "/api/restaurant/update";
@@ -77,6 +78,7 @@ class ManageRestaurant extends React.Component {
                 name: this.state.name,
                 logo: this.state.logo,
                 description: this.state.description,
+                token: this.props.user.token,
             };
         }
 
@@ -111,7 +113,10 @@ class ManageRestaurant extends React.Component {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(restaurant),
+                body: JSON.stringify({
+                    restaurant: restaurant,
+                    token: this.props.user.token,
+                }),
             }
         )
             .then((response) => response.json())
@@ -171,7 +176,8 @@ class ManageRestaurant extends React.Component {
 
 const mapStateToProps = store => {
     return {
-        restaurant: store.restaurantState.restaurant
+        restaurant: store.restaurantState.restaurant,
+        user: store.userState.user,
     };
 };
 

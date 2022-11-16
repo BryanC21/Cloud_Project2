@@ -1,38 +1,23 @@
 import React, { Component } from "react";
-import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
-import SSO from '../sso/sso';
+import { Nav, Navbar, Container } from 'react-bootstrap';
+import NavUser from '../nav/nav_user';
 import { connect } from 'react-redux';
 import { setMainPage } from "../../actions/pageActions";
 import store from "../../store";
 
 class TopNav extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            modalShow: false,
-        };
-        this.setModalShow = this.setModalShow.bind(this);
-    }
-
-    setModalShow(show) {
-        this.setState({ modalShow: show });
-    }
     handleRedirect(page) {
         store.dispatch(setMainPage(page));
     }
-
+ 
     render() {
-        const user = this.props.user;
         const restaurant = this.props.restaurant;
+        const searchParams = new URLSearchParams(document.location.search);
+        const restaurant_id = searchParams.get('restaurant_id');
         return (
             <Navbar bg="light" expand="lg" fixed="top">
                 <Container fluid>
-                    <SSO
-                        show={this.state.modalShow}
-                        onHide={() => this.setState({ modalShow: false })}
-                        setModalShow={this.setModalShow }
-                    />
-                    <Navbar.Brand href="#" onClick={() => this.handleRedirect("main")}>
+                    <Navbar.Brand href={" /restaurant?restaurant_id=" + restaurant_id} onClick={() => this.handleRedirect("main")}>
                         <img
                             src={restaurant.logo  }
                             width="30"
@@ -45,21 +30,13 @@ class TopNav extends Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="#" onClick={() => this.handleRedirect("main")}>Menu</Nav.Link>
+                            <Nav.Link href={"/restaurant?restaurant_id=" + restaurant_id}>Menu</Nav.Link>
                             <Nav.Link href="#">About</Nav.Link>
                         </Nav>
 
                         <Nav>
-                            {user == null ?
-                                <Nav.Link className='text-danger' onClick={() => this.setModalShow(true)}>Login</Nav.Link>
-                                :
-                                <NavDropdown title={user.firstName} id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item href="">Log Out</NavDropdown.Item>
-                                </NavDropdown>
-                            }
-                            <Nav.Link href="#" onClick={()=>this.handleRedirect("checkout")}>Cart{this.props.order.length > 0 ? "(" + this.props.order.length + ")" : ""}</Nav.Link>
+                            <NavUser/>
+                            <Nav.Link href={"/restaurant/checkout?restaurant_id=" + restaurant_id}>Cart{this.props.count > 0 ? "(" + this.props.count + ")" : ""}</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -71,8 +48,8 @@ class TopNav extends Component {
 const mapStateToProps = store => {
     return {
         restaurant: store.restaurantState.restaurant,
-        user: store.userState.user,
         order: store.orderState.order,
+        count: store.orderState.count,
     }
 }
 

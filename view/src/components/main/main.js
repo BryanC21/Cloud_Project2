@@ -12,16 +12,16 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
+            //loading: true,
             reload: 1,
         }
     }
 
-    async componentDidMount() {
-        const searchParams = new URLSearchParams(document.location.search);
-        await store.dispatch(getRestaurant(searchParams.get('id')));
-        this.setState({ loading: false });
-    }
+    //async componentDidMount() {
+    //    const searchParams = new URLSearchParams(document.location.search);
+    //    await store.dispatch(getRestaurant(searchParams.get('id')));
+    //    this.setState({ loading: false });
+    //}
 
     handleRedirect() {
         switch (this.props.mainPage) {
@@ -37,9 +37,9 @@ class Main extends React.Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return <h1>Loading...</h1>;
-        }
+        //if (this.state.loading) {
+        //    return <h1>Loading...</h1>;
+        //}
         return (
             <>
                 <TopNav />

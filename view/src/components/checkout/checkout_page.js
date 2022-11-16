@@ -19,7 +19,6 @@ class CheckoutPage extends Component {
                     </div>
                 </div>
                 <br />
-                <Info />
             </>
         );
     }

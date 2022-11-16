@@ -1,147 +1,111 @@
 import React, { Component } from "react";
-import Gift from "../../assets/img/gift.png";
-import GiftPromo from "../../assets/img/gift_promo.png";
 import { Modal, Button } from "react-bootstrap";
-import { FacebookColor ,Twitter1Color ,LinkedinColor , GmailColor , WhatsappColor} from "sketch-icons";
+import { connect } from 'react-redux';
+import store from "../../store";
+import { delOrder } from "../../actions/orderActions";
 
 class Checkout extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      show: false,
-    };
-  }
+    handleOrder() {
+        const searchParams = new URLSearchParams(document.location.search);
+        var table_id = searchParams.get('table_id');
+        if (!table_id) {
+            console.log(this.props.restaurant);
+            table_id = this.props.restaurant.pickup.id;
+        }
+        var api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
+        fetch(api + "/api/order/make",
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    restaurant_id: this.props.restaurant.id,
+                    table_id: table_id,
+                    //user_id: this.props.user.id,
+                    user_id: 3,
+                    status: "Waiting",
+                    order_items: this.props.order,
+                }),
+            }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.code === 200) {
+                    alert("Order Placed");
+                    store.dispatch(delOrder());
+                    window.location.href=window.location.href.replace("/checkout", ""); 
+                } else {
+                    alert(data.message);
+                }
+            });
+    }
 
-  render() {
-    const { show } = this.state;
-
-    return (
-      <>
-        <Modal
-          show={show}
-          onHide={() => this.setState({ show: false })}
-          backdrop="static"
-          keyboard={false}
-          size="lg"
-          centered
-        >
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <div className="container">
-              <div className="row">
-                <div className="col-xxl-8 col-md-8 col-8 offset-md-2 offset-2 offset-xxl-2 promotion-box">
-                  <img src={GiftPromo} alt="gift" />
-                  <h3>
-                    You and your friend get 30% off upto 500 on your next months
-                    rent
-                  </h3>
-                  <p>Your promo code</p>
-                  <h1>ANDNYD2S</h1>
-                  <hr />
-                  <p>Share on</p>
-                  <div className="social-icons">
-                    <a href="#">
-                    <GmailColor />
-                    </a>
-                    <a href="#">
-                    <WhatsappColor />
-                    </a>
-                    <a href="#">
-                      <FacebookColor />
-                    </a>
-                    <a href="#">
-                    <Twitter1Color />
-                    </a>
-                    <a href="#">
-                    <LinkedinColor />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-        </Modal>
-
-        <aside className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
-          <div className="items-body container" style={{ padding: "10%" }}>
-            <div className="promo-box">
-              <span>
-                <img src={Gift} alt="gift" />
-              </span>
-              <span>&nbsp; Have a promo code ?</span>
-            </div>
-            <br />
-            <div className="row payment">
-              <div className="col-7 col-xxl-7">
-                <h4 className="text-style-2">Monthly Rent</h4>
-              </div>
-              <div className="col">
-                <h4 className="text-style-3 text-end">Rs 3050</h4>
-              </div>
-            </div>
-            <div className="row payment">
-              <div className="col-7 col-xxl-7">
-                <h4 className="text-style-2">Security Deposit</h4>
-              </div>
-              <div className="col">
-                <h4 className="text-style-3 text-end">Rs 6799</h4>
-              </div>
-            </div>
-            <div className="row payment">
-              <div className="col-7 col-xxl-7">
-                <h4 className="text-style-2">GST</h4>
-              </div>
-              <div className="col">
-                <h4 className="text-style-3 text-end">Rs 300</h4>
-              </div>
-            </div>
-            <div className="row payment">
-              <div className="col-7 col-xxl-7">
-                <h4 className="text-style-2">Coupoun Discount</h4>
-              </div>
-              <div className="col">
-                <h4 className="text-style-3 text-end" style={{ color: "#ef4423" }}>
-                  - Rs 2,789
-                </h4>
-              </div>
-            </div>
-            <div className="row payment">
-              <div className="col-7 col-xxl-7">
-                <h4 className="text-style-2">Delivery</h4>
-              </div>
-              <div className="col">
-                <h4
-                  className="text-style-3 text-end"
-                  style={{ color: "limegreen" }}
-                >
-                  FREE
-                </h4>
-              </div>
-            </div>
-            <hr />
-            <div className="row payment">
-              <div className="col-7 col-xxl-7">
-                <h4 className="text-style-1">Delivery</h4>
-              </div>
-              <div className="col">
-                <h4 className="text-style-1 text-end">Rs 30,000</h4>
-              </div>
-            </div>
-            <br />
-            <div className="row container">
-              <button
-                className="btn btn-primary custom-btn-fill"
-                onClick={() => this.setState({ show: true })}
-                type="button"
-              >
-                Place Order
-              </button>
-            </div>
-          </div>
-        </aside>
-      </>
-    );
-  }
+    render() {
+        return (
+            <>
+                <aside className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <div className="items-body container" style={{ padding: "10%" }}>
+                        <div className="promo-box">
+                            {this.props.count}
+                            {this.props.count > 1
+                                ? 
+                                " items"
+                                : 
+                                " item"
+                            }
+                        </div>
+                        <br />
+                        <div className="row payment">
+                            <div className="col-7 col-xxl-7">
+                                <h4 className="text-style-2">Subtotal</h4>
+                            </div>
+                            <div className="col">
+                                <h4 className="text-style-3 text-end">${this.props.total}</h4>
+                            </div>
+                        </div>
+                        <div className="row payment">
+                            <div className="col-7 col-xxl-7">
+                                <h4 className="text-style-2">Tax</h4>
+                            </div>
+                            <div className="col">
+                                <h4 className="text-style-3 text-end">$0</h4>
+                            </div>
+                        </div>
+                        <hr />
+                        <div className="row payment">
+                            <div className="col-7 col-xxl-7">
+                                <h4 className="text-style-1">Total</h4>
+                            </div>
+                            <div className="col">
+                                <h4 className="text-style-1 text-end">${this.props.total}</h4>
+                            </div>
+                        </div>
+                        <br />
+                        <div className="row container">
+                            <button
+                                className="btn custom-btn-fill"
+                                onClick={() => this.handleOrder()}
+                                type="button"
+                            >
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+            </>
+        );
+    }
 }
 
-export default Checkout;
+const mapStateToProps = store => {
+    return {
+        user: store.userState.user,
+        restaurant: store.restaurantState.restaurant,
+        order: store.orderState.order,
+        total: store.orderState.total,
+        count: store.orderState.count,
+    }
+}
+
+export default connect(mapStateToProps)(Checkout);

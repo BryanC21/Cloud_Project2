@@ -5,10 +5,18 @@ import {
 
 const initialState = {
     order: [],
+    count: 0,
+    total: 0,
 };
 
 const setOrder = (state, action) => {
-    return { ...state, order: action.order };
+    let total = 0;
+    let count = 0;
+    action.order.forEach(item => {
+        total += item.quantity * item.price;
+        count += item.quantity;
+    })
+    return { ...state, order: action.order, total: total, count: count };
 };
 
 const delOrder = (state, action) => {

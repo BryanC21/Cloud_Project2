@@ -31,9 +31,7 @@ class Signin extends React.Component {
         )
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 if (data.code === 200) {
-                    console.log(data.accessToken);
                     sessionStorage.setItem("token", data.accessToken);
                     const user = {
                         id: data.userinfo[0].id,
@@ -41,9 +39,12 @@ class Signin extends React.Component {
                         firstName: data.userinfo[0].first_name,
                         lastName: data.userinfo[0].last_name,
                         level: data.userinfo[0].level,
+                        token: data.accessToken,
                     }
                     store.dispatch(setUser(user));
-                    this.props.setModalShow(false);
+                    if (user.level === "admin") {
+                        window.location.href = "/";
+                    }
                 } else {
                     alert(data.message);
                 }

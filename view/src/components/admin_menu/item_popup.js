@@ -96,6 +96,7 @@ class ItemPopup extends React.Component {
             image: this.state.image,
             restaurant_id: this.props.restaurant.id,
             categories: categories,
+            token: this.props.user.token,
         };
         if (this.props.operation === "update") {
             api_path = "/api/restaurant/menu/updateWithCategory";
@@ -107,6 +108,7 @@ class ItemPopup extends React.Component {
                 image: this.state.image,
                 restaurant_id: this.props.restaurant.id,
                 categories: categories,
+                token: this.props.user.token,
             };
         }
         const response = await fetch(api + api_path,
@@ -184,7 +186,8 @@ class ItemPopup extends React.Component {
 
 const mapStateToProps = store => {
     return {
-        restaurant: store.restaurantState.restaurant
+        user: store.userState.user,
+        restaurant: store.restaurantState.restaurant,
     };
 };
 

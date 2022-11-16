@@ -5,13 +5,15 @@ class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            firstName: "",
+            lastName: "",
+            phone: "",
+            password: "",
+            rePassword: "",
             accountType: "user",
         }
     }
 
-    handleUsernameChange(e) {
-        this.setState({ username: e.target.value });
-    }
     handleFirstNameChange(e) {
         this.setState({ firstName: e.target.value });
     }
@@ -21,9 +23,6 @@ class Register extends React.Component {
     handlePhoneChange(e) {
         this.setState({ phone: e.target.value });
     }
-    handleEmailChange(e) {
-        this.setState({ email: e.target.value });
-    }
     handlePasswordChange(e) {
         this.setState({ password: e.target.value });
     }
@@ -32,13 +31,6 @@ class Register extends React.Component {
     }
     handleAccountTypeChange(e) {
         this.setState({ accountType: e.target.value });
-    }
-    handleAgreeChange(e) {
-        if (this.state.agree === "on") {
-            this.setState({ agree: "" });
-        } else {
-            this.setState({ agree: "on" });
-        }
     }
 
     handleRegister(e) {
@@ -55,19 +47,17 @@ class Register extends React.Component {
                     'last_name': this.state.lastName,
                     'phone_number': this.state.phone,
                     'password': this.state.password,
-                    'reenter_password': this.state.password,
+                    'reenter_password': this.state.rePassword,
                     'level': this.state.accountType,
                 }),
             }
         )
-            //.then((response) => response.json())
             .then((data) => {
-                console.log(data.body);
-                //if (data.status === 200) {
-                //    this.props.setK('signin');
-                //} else {
-                //    alert(data.body.message);
-                //}
+                if (data.status === 200) {
+                    this.props.setK('signin');
+                } else {
+                    alert(data.body.message);
+                }
             });
     }
 
@@ -101,9 +91,6 @@ class Register extends React.Component {
                         <option value="user">Customer</option>
                         <option value="admin">Merchant</option>
                     </Form.Select>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="registerCheckbox">
-                    <Form.Check type="checkbox" label="I have read and agree to the terms" checked={this.state.agree} onClick={e => this.handleAgreeChange(e)} />
                 </Form.Group>
                 <Button variant="primary" onClick={e => this.handleRegister(e)}>
                     Register

@@ -22,7 +22,7 @@ class Popup extends React.Component {
     }
 
     handleAdd() {
-        const order = [...this.props.order, { ...this.props.item, quantity: this.state.quantity }]
+        const order = [...this.props.order, { ...this.props.item, item_id: this.props.item.id, quantity: this.state.quantity, status: "Waiting" }]
         store.dispatch(setOrder(order));
         this.props.onHide();
     }

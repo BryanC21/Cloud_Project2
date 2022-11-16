@@ -1,19 +1,9 @@
 import React, { Fragment } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import Item from "../main/item";
-import { getMenu } from '../../actions/restaurantActions';
-import store from '../../store';
 import { connect } from 'react-redux';
 
 class Menu extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-        store.dispatch(getMenu(this.props.restaurant.id, this.props.categories));
-    }
-
     render() {
         return (
             <div className="col-lg-9 pt-5">
@@ -29,13 +19,13 @@ class Menu extends React.Component {
                                 </Fragment>
                             ))
                                 : (
-                                    <p>No items in cart</p>
+                                    <p>No items in menu</p>
                                 )}
                         </Row>
                     </Fragment>
                 ))
                     : (
-                        <p>No items in cart</p>
+                        <p>No items in categories</p>
                     )}
             </div>
         );

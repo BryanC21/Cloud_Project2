@@ -15,7 +15,7 @@ class Restaurant extends React.Component {
         const data = this.props.data;
         return (
             <Card className="mb-5 items-body">
-                <a href={"/restaurant?id=" + data.id} className="text-decoration-none text-reset">
+                <a href={"/restaurant?restaurant_id=" + data.id} className="text-decoration-none text-reset">
                 <Row>
                     <Col xs="12" lg="2">
                         <div style={imgDivStyle}>

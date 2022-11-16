@@ -25,7 +25,6 @@ class Admin extends Component {
     }
 
     render() {
-        console.log(this.props.adminPage);
         return (
             <>
                 {isEmpty(this.props.restaurant) ?
