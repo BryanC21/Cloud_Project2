@@ -893,7 +893,7 @@ app.post('/api/order/getAllRestaurant', function (req, res) {
 app.post('/api/order/getAllIncompleteRestaurant', function (req, res) {
   console.log("Order get all restaurant incomplete");
   let restaurant_id = req.body.restaurant_id;
-  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND status == 'Waiting'`;
+  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND status = 'Waiting'`;
   con.query
     (sql, function (err, result) {
       if (err) {
@@ -937,7 +937,7 @@ app.post('/api/order/getAllIncompleteRestaurant', function (req, res) {
 app.post('/api/order/getAllCompleteRestaurant', function (req, res) {
   console.log("Order get all restaurant complete");
   let restaurant_id = req.body.restaurant_id;
-  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND status == 'Completed'`;
+  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND status = 'Completed'`;
   con.query
     (sql, function (err, result) {
       if (err) {
@@ -1027,7 +1027,7 @@ app.post('/api/order/getAllIncompleteUser', function (req, res) {
   console.log("Order get all user incomplete");
   //console.log(JSON.stringify(req.body));
   let user_id = req.body.user_id;
-  let sql = `SELECT * FROM ResOrder WHERE user_id = '${user_id}' AND status == 'Waiting'`;
+  let sql = `SELECT * FROM ResOrder WHERE user_id = '${user_id}' AND status = 'Waiting'`;
   con.query
     (sql, function (err, result) {
       if (err) {
@@ -1072,7 +1072,7 @@ app.post('/api/order/getAllCompleteUser', function (req, res) {
   console.log("Order get all user complete");
   //console.log(JSON.stringify(req.body));
   let user_id = req.body.user_id;
-  let sql = `SELECT * FROM ResOrder WHERE user_id = '${user_id}' AND status == 'Complete'`;
+  let sql = `SELECT * FROM ResOrder WHERE user_id = '${user_id}' AND status = 'Completed'`;
   con.query
     (sql, function (err, result) {
       if (err) {
@@ -1117,7 +1117,7 @@ app.post('/api/order/getAllIncompleteTable', function (req, res) {
   console.log("Order get all table incomplete");
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
-  let sql = `SELECT * FROM ResOrder WHERE table_id = '${table_id}' AND status == 'Waiting'`;
+  let sql = `SELECT * FROM ResOrder WHERE table_id = '${table_id}' AND status = 'Waiting'`;
   con.query
     (sql, function (err, result) {
       if (err) {
@@ -1162,7 +1162,7 @@ app.post('/api/order/getAllCompleteTable', function (req, res) {
   console.log("Order get all table incomplete");
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
-  let sql = `SELECT * FROM ResOrder WHERE table_id = '${table_id}' AND status == 'Completed'`;
+  let sql = `SELECT * FROM ResOrder WHERE table_id = '${table_id}' AND status = 'Completed'`;
   con.query
     (sql, function (err, result) {
       if (err) {
