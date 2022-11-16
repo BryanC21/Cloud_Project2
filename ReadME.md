@@ -378,3 +378,116 @@ Types are Strings unless otherwise specified
     }
   }
   ```
+
+`POST /api/restaurant/table/add` - Add a table to a restaurant  
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
+    "table_name": INT "Table number Ex. 1",
+    "table_status": "Empty/In_Use", - if empty orders get declined. Res must set to In_Use when customer is seated to allow orders to pass
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "table": {
+        "id": INT "ID of the table created Ex. 1",
+        "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
+        "name": "name of table, Ex. Table 1",
+        "status": "Table state, Ex. Empty",
+      }
+  }
+  ```
+
+`POST /api/restaurant/table/get` - Get all tables for a restaurant
+  Request: 
+  ```
+  {
+    "table_id": INT "ID of the table Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "table": [
+        {
+          "id": INT "ID of the table created Ex. 1",
+          "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
+          "name": "name of table, Ex. Table 1",
+          "status": "Table state, Ex. Empty",
+        },
+      ]
+  }
+  ```
+
+`POST /api/restaurant/table/getAll` - get all tables for a restaurant
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant to get tables for Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    if sucessful:
+      "table": [
+        {
+          "id": INT "ID of the table created Ex. 1",
+          "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
+          "name": "name of table, Ex. Table 1",
+          "status": "Table state, Ex. Empty",
+        },
+        ...
+      ]
+  }
+  ```
+
+`POST /api/restaurant/table/update` - Update a table for a restaurant
+  Request: 
+  ```
+  {
+    "table_id": INT "ID of the table Ex. 1",
+    "table_name": INT "Table name Ex. Table1",
+    "table_status": "Empty/In_Use", - if empty orders get declined. Res must set to In_Use when customer is seated to allow orders to pass
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    "table": [
+        {
+          "id": INT "ID of the table created Ex. 1",
+          "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
+          "name": "name of table, Ex. Table 1",
+          "status": "Table state, Ex. Empty",
+        },
+      ]
+  }
+  ```
+
+`POST /api/restaurant/table/delete` - Delete a table for a restaurant
+  Request: 
+  ```
+  {
+    "table_id": INT "ID of the table Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+  }
+  ```
