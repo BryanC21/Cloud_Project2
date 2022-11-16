@@ -884,16 +884,99 @@ app.post('/api/order/getAllRestaurant', function (req, res) {
                   res.status(200).send({ code: 200, message: "Orders get successful", orders: fullOrders });
                 }
               }
-            }
-            );
+            });
         }
-
       }
     });
 });
 
 //get all incopmlete orders for a restaurant
+app.post('/api/order/getAllIncompleteRestaurant', function (req, res) {
+  console.log("Order get all restaurant incomplete");
+  let restaurant_id = req.body.restaurant_id;
+  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND status == 'Waiting'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get orders", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        //res.status(200).send({ code: 200, message: "Orders get successful", orders: result });
+        let fullOrders = [];
+        let count = result.length;
+        for (let i = 0; i < count; i++) {
+          let fullOrder = {
+            order: result[i],
+            order_items: []
+          };
+          let sql = `SELECT Order_Item.quantity, Order_Item.status, Order_Item.id as order_item_id, \
+        Menu_Item.id as item_id, Menu_Item.name, Menu_Item.price, Menu_Item.description, Menu_Item.image \
+        FROM Order_Item \
+        INNER JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id \
+        WHERE Order_Item.order_id = '${result[i].id}' AND Order_Item.quantity > 0`; //quantity > 0 to avoid deleted items
+          con.query
+            (sql, function (err, result) {
+              if (err) {
+                console.log(err);
+                res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+              } else {
+                console.log("Result: " + JSON.stringify(result));
+                fullOrder.order_items = result;
+                fullOrders.push(fullOrder);
+                if (fullOrders.length >= count) {
+                  res.status(200).send({ code: 200, message: "Orders get successful", orders: fullOrders });
+                }
+              }
+            });
+        }
+      }
+    });
+});
+
 //get all complete orders for a restaurant
+app.post('/api/order/getAllCompleteRestaurant', function (req, res) {
+  console.log("Order get all restaurant complete");
+  let restaurant_id = req.body.restaurant_id;
+  let sql = `SELECT * FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND status == 'Completed'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get orders", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        //res.status(200).send({ code: 200, message: "Orders get successful", orders: result });
+        let fullOrders = [];
+        let count = result.length;
+        for (let i = 0; i < count; i++) {
+          let fullOrder = {
+            order: result[i],
+            order_items: []
+          };
+          let sql = `SELECT Order_Item.quantity, Order_Item.status, Order_Item.id as order_item_id, \
+        Menu_Item.id as item_id, Menu_Item.name, Menu_Item.price, Menu_Item.description, Menu_Item.image \
+        FROM Order_Item \
+        INNER JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id \
+        WHERE Order_Item.order_id = '${result[i].id}' AND Order_Item.quantity > 0`; //quantity > 0 to avoid deleted items
+          con.query
+            (sql, function (err, result) {
+              if (err) {
+                console.log(err);
+                res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+              } else {
+                console.log("Result: " + JSON.stringify(result));
+                fullOrder.order_items = result;
+                fullOrders.push(fullOrder);
+                if (fullOrders.length >= count) {
+                  res.status(200).send({ code: 200, message: "Orders get successful", orders: fullOrders });
+                }
+              }
+            });
+        }
+      }
+    });
+});
 
 //get all orders for a user
 app.post('/api/order/getAllUser', function (req, res) {
@@ -941,7 +1024,94 @@ app.post('/api/order/getAllUser', function (req, res) {
 });
 
 //get all incomplete orders for a user
+app.post('/api/order/getAllIncompleteUser', function (req, res) {
+  console.log("Order get all user incomplete");
+  //console.log(JSON.stringify(req.body));
+  let user_id = req.body.user_id;
+  let sql = `SELECT * FROM ResOrder WHERE user_id = '${user_id}' AND status == 'Waiting'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get orders", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        //res.status(200).send({ code: 200, message: "Orders get successful", orders: result });
+        let fullOrders = [];
+        let count = result.length;
+        for (let i = 0; i < count; i++) {
+          let fullOrder = {
+            order: result[i],
+            order_items: []
+          };
+          let sql = `SELECT Order_Item.quantity, Order_Item.status, Order_Item.id as order_item_id, \
+            Menu_Item.id as item_id, Menu_Item.name, Menu_Item.price, Menu_Item.description, Menu_Item.image \
+            FROM Order_Item \
+            INNER JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id \
+            WHERE Order_Item.order_id = '${result[i].id}' AND Order_Item.quantity > 0`; //quantity > 0 to avoid deleted items
+          con.query
+            (sql, function (err, result) {
+              if (err) {
+                console.log(err);
+                res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+              } else {
+                console.log("Result: " + JSON.stringify(result));
+                fullOrder.order_items = result;
+                fullOrders.push(fullOrder);
+                if (fullOrders.length >= count) {
+                  res.status(200).send({ code: 200, message: "Orders get successful", orders: fullOrders });
+                }
+              }
+            });
+        }
+      }
+    });
+});
+
 //get all complete orders for a user
+app.post('/api/order/getAllCompleteUser', function (req, res) {
+  console.log("Order get all user complete");
+  //console.log(JSON.stringify(req.body));
+  let user_id = req.body.user_id;
+  let sql = `SELECT * FROM ResOrder WHERE user_id = '${user_id}' AND status == 'Complete'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get orders", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        //res.status(200).send({ code: 200, message: "Orders get successful", orders: result });
+        let fullOrders = [];
+        let count = result.length;
+        for (let i = 0; i < count; i++) {
+          let fullOrder = {
+            order: result[i],
+            order_items: []
+          };
+          let sql = `SELECT Order_Item.quantity, Order_Item.status, Order_Item.id as order_item_id, \
+            Menu_Item.id as item_id, Menu_Item.name, Menu_Item.price, Menu_Item.description, Menu_Item.image \
+            FROM Order_Item \
+            INNER JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id \
+            WHERE Order_Item.order_id = '${result[i].id}' AND Order_Item.quantity > 0`; //quantity > 0 to avoid deleted items
+          con.query
+            (sql, function (err, result) {
+              if (err) {
+                console.log(err);
+                res.status(400).send({ code: 400, message: "Failed to get order", error: err });
+              } else {
+                console.log("Result: " + JSON.stringify(result));
+                fullOrder.order_items = result;
+                fullOrders.push(fullOrder);
+                if (fullOrders.length >= count) {
+                  res.status(200).send({ code: 200, message: "Orders get successful", orders: fullOrders });
+                }
+              }
+            });
+        }
+      }
+    });
+});
 
 //table management
 //add table

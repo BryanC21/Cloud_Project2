@@ -669,6 +669,8 @@ Types are Strings unless otherwise specified
       ]
   }
   ```
+`POST /api/order/getAllCompleteRestaurant` - same as get all restaurant but only returns completed orders  
+`POST /api/order/getAllIncompleteRestaurant` - same as get all restaurant but only returns incomplete orders
 
 `POST /api/order/getAllUser` - returns all orders for a user
   Request: 
@@ -711,3 +713,5 @@ Types are Strings unless otherwise specified
       ]
   }
   ```
+`POST /api/order/getAllCompleteUser` - same as get all user but only returns completed orders  
+`POST /api/order/getAllIncompleteUser` - same as get all user but only returns incomplete orders
