@@ -660,7 +660,7 @@ app.post('/api/restaurant/menu/getAllForRestaurant', function (req, res) {
   });
 });
 
-app.post(`/api/uploadImage`, checkAuth, function (req, res) {
+app.post(`/api/uploadImage`, function (req, res) {
   console.log("Upload Image");
   var message;
   var form = new multiparty.Form();
