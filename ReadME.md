@@ -23,7 +23,13 @@ User Routes missing for now
     "login": true,
     "message": "verified successfully",
     "data": {
-      userdata: {}//not sure how this looks i didnt make it
+      userinfo: {
+        phone_number: phone_number,
+        id:id,
+        first_name: first_name,
+        last_name: last_name,
+        level:level
+      }
     }
   }
   ```
