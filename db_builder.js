@@ -177,6 +177,13 @@ con.query(sql, function (err, result) {
 });
 
 //Inserts
+var sql = "INSERT INTO User (first_name, last_name, phone_number, password, level) VALUES ('PICKUP', 'PICKUP', '0000000000', 'c5f1-4551-9f58-681', 'user')";
+con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("1 User inserted");
+});
+
+
 /*var sql = "INSERT INTO User (first_name, last_name, phone_number, password) VALUES ('John', 'Doe', '1234567890', 'password')";
 con.query(sql, function (err, result) {
     if (err) throw err;
