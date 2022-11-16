@@ -107,13 +107,15 @@ app.post( "/verify", (req, res) => {
     try {
       const decode = jwt.verify(token, process.env.JWT_KEY);
       console.log("verified successfully");
-      res.json({
+        res.json({
+          code: 200,
         login: true,
         message: "verified successfully",
         data: decode
       });
     } catch (err) {
-      console.log("Error in verifying");
+          code: 400,
+              console.log("Error in verifying");
       res.json({
         login: false,
         message: "Error in verifying",
@@ -124,7 +126,8 @@ app.post( "/verify", (req, res) => {
   else {
     res.json(
       {
-        login: false,
+          code: 401,
+            login: false,
         message: 'No token',
         data: {}
       })
