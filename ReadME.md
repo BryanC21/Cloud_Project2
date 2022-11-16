@@ -518,6 +518,28 @@ Types are Strings unless otherwise specified
     "Message": "Success/Error Message"",
   }
   ```
+`POST /api/restaurant/table/getpickup` - get restaurant's pickup table
+  Request: 
+  ```
+  {
+    "restaurant_id": INT "ID of the restaurant Ex. 1",
+  }
+  ```
+  Response: 
+  ```
+  {
+    "code": 200/400,
+    "Message": "Success/Error Message"",
+    "table": {
+      "id": INT "ID of the table created Ex. 1",
+      "restaurant_id": INT "ID of the restaurant to add the table to Ex. 1",
+      "name": "name of table, Ex. Table 1",
+      "status": "Table state, Ex. Empty",
+      "capacity": INT "Number of people that can sit at the table Ex. 2",
+      "description": "Table Description Ex: Table for 2",
+    }
+  }
+  ```
 
 `POST /api/order/make` - Create a new order  
   Request: 
