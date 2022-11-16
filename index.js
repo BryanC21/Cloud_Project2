@@ -114,7 +114,7 @@ db.getConnection ( async (err, connection)=> {
       console.log(err);
       res.status(400).send({code:400,message:"Failed to login",error:err})
 }
- const sql_Search = "Select * from user1 where phone_number = ?"
+ const sql_Search = "SELECT * from User WHERE phone_number = ?"
  const search_query = mysql.format(sql_Search,[phone_number])
 await connection.query (search_query, async (err, result) => {
 connection.release()
