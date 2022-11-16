@@ -825,3 +825,18 @@ Types are Strings unless otherwise specified
       ]
   }
   ```
+`POST /api/restaurant/getDefaultUser` - gets the default user for restaurants
+  Request: 
+  ```
+  {
+    //no request body
+  }
+  ```
+  Response: 
+  ```
+  {
+      "user": {
+        "id": INT "ID of the user Ex. 1",
+      }
+  }
+  ```
