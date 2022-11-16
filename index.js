@@ -280,7 +280,7 @@ app.post('/api/restaurant/register', checkAuth, function (req, res) {
       console.log("Result: " + JSON.stringify(result));
       if (result.affectedRows != 0) {
         let restaurant = result.insertId;
-        let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${result.insertId}', 'PICKUP', 'In_Use')`;
+        let sql = `INSERT INTO ResTable (restaurant_id, name, status, description, capacity) VALUES ('${result.insertId}', 'PICKUP', 'In_Use', 'Pickup', '9999999')`;
         con.query(sql, function (err, result) {
           if (err) {
             console.log(err);
@@ -1113,6 +1113,12 @@ app.post('/api/order/getAllCompleteUser', function (req, res) {
     });
 });
 
+//get all orders for a table incomplete
+
+
+//get all orders for a table complete
+
+
 //table management
 //add table
 app.post('/api/restaurant/table/add', checkAuth, function (req, res) {
@@ -1121,7 +1127,9 @@ app.post('/api/restaurant/table/add', checkAuth, function (req, res) {
   let restaurant_id = req.body.restaurant_id;
   let table_name = req.body.table_name;
   let status = req.body.table_status;
-  let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${restaurant_id}', '${table_name}', '${status}')`;
+  let description = req.body.description;
+  let capacity = req.body.capacity;
+  let sql = `INSERT INTO ResTable (restaurant_id, name, status, description, capacity) VALUES ('${restaurant_id}', '${table_name}', '${status}', '${description}', '${capacity}')`;
   con.query
     (sql, function (err, result) {
       if (err) {
@@ -1141,7 +1149,9 @@ app.post('/api/restaurant/table/update', checkAuth, function (req, res) {
   let table_id = req.body.table_id;
   let table_name = req.body.table_name;
   let status = req.body.table_status;
-  let sql = `UPDATE ResTable SET name = '${table_name}', status = '${status}' WHERE id = '${table_id}'`;
+  let description = req.body.description;
+  let capacity = req.body.capacity;
+  let sql = `UPDATE ResTable SET name = '${table_name}', status = '${status}', description = '${description}', capacity = '${capacity}' WHERE id = '${table_id}'`;
   con.query
     (sql, function (err, result) {
       if (err) {
