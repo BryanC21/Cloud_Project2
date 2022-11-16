@@ -20,7 +20,7 @@ class AdminMenu extends Component {
     }
 
     async getCategories() {
-        const api = process.env.API || "http://192.168.56.1:4080"
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
         const response = await fetch(api + "/api/restaurant/category/get",
             {
                 method: 'POST',
@@ -41,7 +41,7 @@ class AdminMenu extends Component {
     }
 
     async getMenu() {
-        const api = process.env.API || "http://192.168.56.1:4080"
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
         const response = await fetch(api + "/api/restaurant/menu/getSorted",
             {
                 method: 'POST',

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Button, Form } from "react-bootstrap";
+import store from '../../store';
+import { setUser } from '../../actions/userActions';
 
 class Signin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
 
     handlePhoneChange(e) {
@@ -13,38 +15,37 @@ class Signin extends React.Component {
     handlePasswordChange(e) {
         this.setState({ password: e.target.value });
     }
-    handleSignin(e) {
-        const sso_url = process.env.SSO_URL || "https://oyygn6heb6.execute-api.us-west-1.amazonaws.com/prod/";
-        const sso_key = process.env.SSO_KEY || "U3T0Z9LBfY3S8ml1w7amnm20GIwy0kF75MjeXA2i";
-        fetch(sso_url + "/login",
+    handleSignin() {
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
+        fetch(api + "/login",
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': sso_key,
                 },
                 body: JSON.stringify({
-                    'mobile_number': this.state.phone,
+                    'phone_number': this.state.phone,
                     'password': this.state.password,
                 }),
             }
         )
-            .then((response) => response.json().then(data => ({ status: response.status, body: data })))
+            .then((response) => response.json())
             .then((data) => {
-                if (data.status === 200) {
-                    sessionStorage.setItem("token", data.body.token);
+                console.log(data);
+                if (data.code === 200) {
+                    console.log(data.accessToken);
+                    sessionStorage.setItem("token", data.accessToken);
                     const user = {
-                        id: data.body.user.id,
-                        phone: data.body.user.mobile_number,
-                        username: data.body.user.username,
-                        firstName: data.body.user.first_name,
-                        lastName: data.body.user.last_name,
-                        level: data.body.user.level,
+                        id: data.userinfo[0].id,
+                        phone: data.userinfo[0].phone_number,
+                        firstName: data.userinfo[0].first_name,
+                        lastName: data.userinfo[0].last_name,
+                        level: data.userinfo[0].level,
                     }
-                    this.props.setUser(user);
+                    store.dispatch(setUser(user));
                     this.props.setModalShow(false);
                 } else {
-                    alert(data.body.message);
+                    alert(data.message);
                 }
             });
     }
@@ -61,7 +62,7 @@ class Signin extends React.Component {
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={this.state.password || ''} onChange={e => this.handlePasswordChange(e)} />
                 </Form.Group>
-                <Button variant="primary" onClick={e => this.handleSignin(e)}>
+                <Button variant="primary" onClick={() => this.handleSignin()}>
                     Sign In
                 </Button>
             </Form>

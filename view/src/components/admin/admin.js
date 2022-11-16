@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Container } from "react-bootstrap";
-import { connect } from 'react-redux';
 import AdminNav from '../nav/admin_nav';
 import AdminMain from '../admin/admin_main';
 import AdminMenu from '../admin_menu/admin_menu';
 import ManageRestaurant from '../admin/manage_restaurant';
+import { connect } from 'react-redux';
 import { getAdminRestaurant } from '../../actions/restaurantActions';
 import store from '../../store';
 import { isEmpty } from '../utils';
@@ -51,7 +51,7 @@ const mapStateToProps = store => {
     return {
         restaurant: store.restaurantState.restaurant,
         user: store.userState.user,
-        adminPage: store.adminPageState.page,
+        adminPage: store.pageState.adminPage,
     }
 }
 

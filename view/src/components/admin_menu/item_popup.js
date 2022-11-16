@@ -64,7 +64,7 @@ class ItemPopup extends React.Component {
     handleImageChange(e) {
         const formData = new FormData();
         const file = e.target.files[0];
-        var api = process.env.API || "http://192.168.56.1:4080";
+        var api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
         var api_path = "/api/uploadImage";
         formData.append('file', file);
         formData.append('file_name', file.name);
@@ -87,7 +87,7 @@ class ItemPopup extends React.Component {
         if (categories.length === 0) {
             categories.push("Main");
         }
-        var api = process.env.API || "http://192.168.56.1:4080";
+        var api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
         var api_path = "/api/restaurant/menu/add";
         var body = {
             name: this.state.name,

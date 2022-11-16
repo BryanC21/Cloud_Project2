@@ -33,7 +33,7 @@ export const setMenu = menu => {
 };
 
 export const getRestaurant = restaurantId => {
-    const api = process.env.API || "http://192.168.56.1:4080"
+    const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
     return dispatch => (fetch(api + "/api/restaurant/get",
         {
             method: 'POST',
@@ -57,7 +57,7 @@ export const getRestaurant = restaurantId => {
 
 
 export const getAdminRestaurant = user_id => {
-    const api = process.env.API || "http://192.168.56.1:4080"
+    const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
     return dispatch => (fetch(api + "/api/restaurant/getByOwnerID",
         {
             method: 'POST',
@@ -80,7 +80,7 @@ export const getAdminRestaurant = user_id => {
 }
 
 async function getCategories(restaurant_id) {
-    const api = process.env.API || "http://192.168.56.1:4080";
+    const api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
     const response = await fetch(api + "/api/restaurant/category/get",
         {
             method: 'POST',
@@ -101,7 +101,7 @@ async function getCategories(restaurant_id) {
 }
 
 async function getMenuHelper(restaurant_id, dispatch) {
-    const api = process.env.API || "http://192.168.56.1:4080";
+    const api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
     const categories = await getCategories(restaurant_id);
     fetch(api + "/api/restaurant/menu/getSorted",
         {

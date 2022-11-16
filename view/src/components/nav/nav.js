@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
 import SSO from '../sso/sso';
 import { connect } from 'react-redux';
+import { setMainPage } from "../../actions/pageActions";
+import store from "../../store";
 
 class TopNav extends Component {
     constructor(props) {
@@ -15,6 +17,9 @@ class TopNav extends Component {
     setModalShow(show) {
         this.setState({ modalShow: show });
     }
+    handleRedirect(page) {
+        store.dispatch(setMainPage(page));
+    }
 
     render() {
         const user = this.props.user;
@@ -27,7 +32,7 @@ class TopNav extends Component {
                         onHide={() => this.setState({ modalShow: false })}
                         setModalShow={this.setModalShow }
                     />
-                    <Navbar.Brand href="#">
+                    <Navbar.Brand href="#" onClick={() => this.handleRedirect("main")}>
                         <img
                             src={restaurant.logo  }
                             width="30"
@@ -40,7 +45,7 @@ class TopNav extends Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="#">Menu</Nav.Link>
+                            <Nav.Link href="#" onClick={() => this.handleRedirect("main")}>Menu</Nav.Link>
                             <Nav.Link href="#">About</Nav.Link>
                         </Nav>
 
@@ -48,13 +53,13 @@ class TopNav extends Component {
                             {user == null ?
                                 <Nav.Link className='text-danger' onClick={() => this.setModalShow(true)}>Login</Nav.Link>
                                 :
-                                <NavDropdown title={user.username} id="basic-nav-dropdown">
+                                <NavDropdown title={user.firstName} id="basic-nav-dropdown">
                                     <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="">Log Out</NavDropdown.Item>
                                 </NavDropdown>
                             }
-                            <Nav.Link href="/checkout">Cart</Nav.Link>
+                            <Nav.Link href="#" onClick={()=>this.handleRedirect("checkout")}>Cart{this.props.order.length > 0 ? "(" + this.props.order.length + ")" : ""}</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -67,6 +72,7 @@ const mapStateToProps = store => {
     return {
         restaurant: store.restaurantState.restaurant,
         user: store.userState.user,
+        order: store.orderState.order,
     }
 }
 

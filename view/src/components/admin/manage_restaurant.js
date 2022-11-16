@@ -17,7 +17,7 @@ class ManageRestaurant extends React.Component {
                 phone: props.restaurant.phone,
             };
         } else {
-            this.state={
+            this.state = {
                 logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png",
             };
         }
@@ -27,7 +27,24 @@ class ManageRestaurant extends React.Component {
         this.setState({ name: e.target.value });
     }
     handleLogoChange(e) {
-        this.setState({ logo: e.target.value });
+        const formData = new FormData();
+        const file = e.target.files[0];
+        var api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
+        var api_path = "/api/uploadImage";
+        formData.append('file', file);
+        formData.append('file_name', file.name);
+        fetch(api + api_path, {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((result) => {
+                if (result.code == 200) {
+                    this.setState({ logo: result.data.Location });
+                } else {
+                    alert(result.message);
+                }
+            })
     }
     handlePhoneChange(e) {
         this.setState({ phone: e.target.value });
@@ -44,7 +61,7 @@ class ManageRestaurant extends React.Component {
     }
 
     handleRegister() {
-        var api = process.env.API || "http://192.168.56.1:4080"
+        var api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
         var api_path = "/api/restaurant/register";
         var restaurant = {
             name: this.state.name,
@@ -84,7 +101,7 @@ class ManageRestaurant extends React.Component {
     }
 
     handleDelete() {
-        const api = process.env.API || "http://192.168.56.1:4080"
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
         var restaurant = {
             id: this.state.id,
         };
@@ -111,10 +128,10 @@ class ManageRestaurant extends React.Component {
     render() {
         return (
             <Container>
-                {this.props.operation === "add" ? 
-                <h2 className="text-center">Register Your Restaurant</h2>
-                    : 
-                <h2 className="text-center">Update Your Restaurant</h2>
+                {this.props.operation === "add" ?
+                    <h2 className="text-center">Register Your Restaurant</h2>
+                    :
+                    <h2 className="text-center">Update Your Restaurant</h2>
                 }<br />
                 <Form>
                     <Form.Group className="my-3" controlId="restaurantName">

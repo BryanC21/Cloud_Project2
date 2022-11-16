@@ -13,7 +13,7 @@ class RestaurantList extends Component {
     }
 
     async getRestaurants() {
-        const api = process.env.API || "http://192.168.56.1:4080";
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
         const response = await fetch(api + "/api/restaurant/getAll",
             {
                 method: 'POST',

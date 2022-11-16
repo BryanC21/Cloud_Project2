@@ -24,7 +24,7 @@ class Menu extends React.Component {
                             {categoryItem.menu.length ? categoryItem.menu.map((item, index) => (
                                 <Fragment key={`${item}~${index}`}>
                                     <Col xs={12} md={6}>
-                                        <Item data={item }/>
+                                        <Item data={item} />
                                     </Col>
                                 </Fragment>
                             ))

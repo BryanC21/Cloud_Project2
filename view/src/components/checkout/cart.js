@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
-import img1 from "../../assets/img/fried_chicken.webp"
-import img2 from "../../assets/img/burger.jfif"
+import { connect } from 'react-redux';
+import { Container } from 'react-bootstrap';
+import { setMainPage } from "../../actions/pageActions";
+import store from "../../store";
+
 class Cart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            cart: [
-                {
-                    "name": 'Fried Chicken',
-                    "price": 5,
-                    "img": img1,
-                },
-                {
-                    "name": 'Burger',
-                    "price": 10,
-                    "img": img2,
-                }
-            ],
-        }
+    handleRedirect(page) {
+        store.dispatch(setMainPage(page));
     }
+
     render() {
-        const { cart } = this.state;
+        const cart = this.props.order;
         return (
             <main className="col-sm-8 col-md-8 col-lg-8 col-xl-8">
                 <div className="items-body">
@@ -29,7 +19,7 @@ class Cart extends Component {
                         cart.map((item, index) => (
                             <div className="row cart-item" key={index}>
                                 <div className="col-md-3">
-                                    <img className="img-fluid" src={item.img} alt={item.img} /></div>
+                                    <img className="img-fluid" src={item.image} alt={item.image} /></div>
                                 <div className="col-md-3 col-sm-3 col-xs-3 col-3" style={{ "padding": '2%' }}>
                                     <h5 className="text-style-1">{item.name}</h5>
                                     <p className="text-style-2">${item.price}</p>
@@ -37,37 +27,21 @@ class Cart extends Component {
                                     {/* counter button  */}
                                     <div className="wrapper">
                                         <span className="minus">-</span>
-                                        <span className="num">01</span>
+                                        <span className="num">{item.quantity}</span>
                                         <span className="plus">+</span>
                                     </div>
-
-                                </div>
-                                <div className="col-md-2 col-sm-3 col-xs-3 col-3" style={{ "padding": '2%' }}>
-                                    <h5 className="text-style-2">Tenure</h5>
-                                    <p className="text-style-3">12 Months</p>
-                                </div>
-                                <div className="col-md-2 col-sm-3 col-xs-3 col-3" style={{ "padding": '2%' }}>
-                                    <h5 className="text-style-2">Tenure</h5>
-                                    <p className="text-style-3">Rs 799</p><small style={{ "color": '#3dbdb6' }}>Fully refundable</small>
-                                </div>
-                                <div className="col-md-2 col-sm-3 col-xs-3 col-3" style={{ "padding": '2%' }}>
-                                    <h5 className="text-style-2">Total</h5>
-                                    <p className="text-style-4">Rs 1499</p>
                                 </div>
                             </div>
                         ))
                         : (
-                            <p>No items in cart</p>
+                            <Container>
+                                <div>No items in cart</div>
+                            </Container>
                         )
                     }
 
-
-
                     <div className="row container py-4">
-                        <div className="col-7 col-md-7 col-lg-8 col-xl-8 col-xxl-7"><a href="/" className="btn btn-primary custom-btn" type="button">CONTINUE SHOPPING</a></div>
-                        <div className="col help-text">
-                            <h5>Need help ?&nbsp;</h5>
-                        </div>
+                        <div className="col-7 col-md-7 col-lg-8 col-xl-8 col-xxl-7"><a href="#" className="btn btn-primary custom-btn" type="button" onClick={() => this.handleRedirect("main")}>CONTINUE SHOPPING</a></div>
                     </div>
                 </div>
             </main>
@@ -75,4 +49,10 @@ class Cart extends Component {
     }
 }
 
-export default Cart;
+const mapStateToProps = store => {
+    return {
+        order: store.orderState.order,
+    }
+}
+
+export default connect(mapStateToProps)(Cart);

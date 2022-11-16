@@ -32,7 +32,7 @@ class Item extends React.Component {
         this.setState({ item: null, modalShow: true, operation: "add" });
     }
     handleDelete(id) {
-        const api = process.env.API || "http://192.168.56.1:4080"
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
         fetch(api + "/api/restaurant/menu/delete",
             {
                 method: 'POST',

@@ -42,8 +42,8 @@ class Register extends React.Component {
     }
 
     handleRegister(e) {
-        const api = process.env.API || "http://192.168.56.1:4080";
-        fetch(api + "/register",
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080";
+        fetch(api + "/createUser",
             {
                 method: 'POST',
                 headers: {
@@ -53,22 +53,21 @@ class Register extends React.Component {
                 body: JSON.stringify({
                     'first_name': this.state.firstName,
                     'last_name': this.state.lastName,
-                    'mobile_number': this.state.phone,
-                    'email': this.state.email,
-                    'username': this.state.username,
+                    'phone_number': this.state.phone,
                     'password': this.state.password,
-                    're_enter_password': this.state.password,
+                    'reenter_password': this.state.password,
                     'level': this.state.accountType,
                 }),
             }
         )
-            .then((response) => response.json().then(data => ({ status: response.status, body: data })))
+            //.then((response) => response.json())
             .then((data) => {
-                if (data.status === 200) {
-                    this.props.setK('signin');
-                } else {
-                    alert(data.body.message);
-                }
+                console.log(data.body);
+                //if (data.status === 200) {
+                //    this.props.setK('signin');
+                //} else {
+                //    alert(data.body.message);
+                //}
             });
     }
 
@@ -76,10 +75,6 @@ class Register extends React.Component {
     render() {
         return (
             <Form>
-                <Form.Group className="mb-3" controlId="registerUsername">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Enter Your First Name" value={this.state.username} onChange={e => this.handleUsernameChange(e)} />
-                </Form.Group>
                 <Form.Group className="mb-3" controlId="registerFirstName">
                     <Form.Label>First Name</Form.Label>
                     <Form.Control type="text" placeholder="Enter Your First Name" value={this.state.firstName} onChange={e => this.handleFirstNameChange(e)} />
@@ -91,10 +86,6 @@ class Register extends React.Component {
                 <Form.Group className="mb-3" controlId="registerPhone">
                     <Form.Label>Phone Number</Form.Label>
                     <Form.Control type="phone" placeholder="Enter Phone Number" value={this.state.phone} onChange={e => this.handlePhoneChange(e)} />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="registerEmail">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" placeholder="Enter Email" value={this.state.email} onChange={e => this.handleEmailChange(e)} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="registerPassword">
                     <Form.Label>Password</Form.Label>
