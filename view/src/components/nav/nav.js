@@ -4,6 +4,7 @@ import NavUser from '../nav/nav_user';
 import { connect } from 'react-redux';
 import { setMainPage } from "../../actions/pageActions";
 import store from "../../store";
+import { createUrl } from "../utils";
 
 class TopNav extends Component {
     handleRedirect(page) {
@@ -12,12 +13,10 @@ class TopNav extends Component {
  
     render() {
         const restaurant = this.props.restaurant;
-        const searchParams = new URLSearchParams(document.location.search);
-        const restaurant_id = searchParams.get('restaurant_id');
         return (
             <Navbar bg="light" expand="lg" fixed="top">
                 <Container fluid>
-                    <Navbar.Brand href={" /restaurant?restaurant_id=" + restaurant_id} onClick={() => this.handleRedirect("main")}>
+                    <Navbar.Brand href={createUrl("/restaurant")} onClick={() => this.handleRedirect("main")}>
                         <img
                             src={restaurant.logo  }
                             width="30"
@@ -30,13 +29,13 @@ class TopNav extends Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href={"/restaurant?restaurant_id=" + restaurant_id}>Menu</Nav.Link>
+                            <Nav.Link href={createUrl("/restaurant")}>Menu</Nav.Link>
                             <Nav.Link href="#">About</Nav.Link>
                         </Nav>
 
                         <Nav>
-                            <NavUser/>
-                            <Nav.Link href={"/restaurant/checkout?restaurant_id=" + restaurant_id}>Cart{this.props.count > 0 ? "(" + this.props.count + ")" : ""}</Nav.Link>
+                            <NavUser orders={true}/>
+                            <Nav.Link href={createUrl("/restaurant/checkout")}>Cart{this.props.count > 0 ? "(" + this.props.count + ")" : ""}</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -48,7 +47,6 @@ class TopNav extends Component {
 const mapStateToProps = store => {
     return {
         restaurant: store.restaurantState.restaurant,
-        order: store.orderState.order,
         count: store.orderState.count,
     }
 }

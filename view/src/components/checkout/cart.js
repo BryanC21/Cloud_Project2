@@ -22,7 +22,17 @@ class Cart extends Component {
 
     render() {
         const cart = this.props.order;
-        console.log(cart);
+        var main_url = new URL(window.location.origin + "/restaurant");
+        const searchParams = new URLSearchParams(document.location.search);
+        const restaurant_id = searchParams.get('restaurant_id');
+        if (restaurant_id) {
+            main_url.searchParams.append('restaurant_id', restaurant_id);
+        }
+        const table_id = searchParams.get('table_id');
+        if (table_id) {
+            main_url.searchParams.append('table_id', restaurant_id);
+        }
+
         return (
             <main className="col-sm-8 col-md-8 col-lg-8 col-xl-8">
                 <div className="items-body">
@@ -65,7 +75,7 @@ class Cart extends Component {
                     }
 
                     <div className="row container py-4">
-                        <div className="col-7 col-md-7 col-lg-8 col-xl-8 col-xxl-7"><a href="#" className="btn btn-primary custom-btn" type="button" onClick={() => this.handleRedirect("main")}>CONTINUE SHOPPING</a></div>
+                        <div className="col-7 col-md-7 col-lg-8 col-xl-8 col-xxl-7"><a href={main_url.href} className="btn btn-primary custom-btn" type="button">CONTINUE SHOPPING</a></div>
                     </div>
                 </div>
             </main>

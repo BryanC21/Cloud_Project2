@@ -20,7 +20,7 @@ const setOrder = (state, action) => {
 };
 
 const delOrder = (state, action) => {
-    return {...state, order: {} };
+    return {...state, order: [], total: 0, count: 0 };
 };
 
 const orderReducer = (state = initialState, action) => {

@@ -15,7 +15,7 @@ class CategoryList extends React.Component {
                         data.map((item, index) => (
                             <Fragment key={`${item}~${index}`}>
                                 <ListGroup.Item className="mb-2">
-                                    <a className='text-decoration-none text-dark h4' href={'#category_' + item.id}>{item.name}</a>
+                                    <a className='text-decoration-none text-dark h4' href={'#category_' + index}>{item.name}</a>
                                 </ListGroup.Item>
                             </Fragment>
                         ))

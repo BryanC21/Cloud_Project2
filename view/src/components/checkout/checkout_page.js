@@ -5,7 +5,6 @@ import Checkout from '../checkout/checkout';
 import Info from '../info/info';
 import Nav from '../nav/nav';
 class CheckoutPage extends Component {
-    state = {}
     render() {
         return (
             <>

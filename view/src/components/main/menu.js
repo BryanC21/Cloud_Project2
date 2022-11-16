@@ -10,7 +10,7 @@ class Menu extends React.Component {
                 {this.props.menu.length ? this.props.menu.map((categoryItem, index) => (
                     <Fragment key={`${categoryItem}~${index}`}>
                         <Row className='mb-5'>
-                            <div><h1 id={"category_" + categoryItem.id}>{categoryItem.name}</h1></div>
+                            <div><h1 id={"category_" + index}>{categoryItem.name}</h1></div>
                             {categoryItem.menu.length ? categoryItem.menu.map((item, index) => (
                                 <Fragment key={`${item}~${index}`}>
                                     <Col xs={12} md={6}>

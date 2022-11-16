@@ -1,5 +1,6 @@
 import {
     SET_ORDER,
+    DEL_ORDER,
 } from './actionTypes';
 
 export const setOrder = order => {
@@ -11,7 +12,10 @@ export const setOrder = order => {
 };
 
 export const delOrder = () => {
-    return dispatch => dispatch(setOrder([]));
+    sessionStorage.setItem("order", JSON.stringify([]));
+    return {
+        type: DEL_ORDER,
+    };
 };
 
 export const getOrder = () => {

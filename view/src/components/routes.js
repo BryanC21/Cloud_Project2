@@ -4,9 +4,10 @@ import Main from './main/main';
 import Admin from './admin/admin';
 import AdminMenu from './admin_menu/admin_menu';
 import RestaurantMain from './restaurant/restaurant_main';
+import UserOrder from './user_order/user_order';
 import Error from './error/error';
 import { getUser } from '../actions/userActions';
-import { getRestaurant, getMenu, getAdminRestaurant } from '../actions/restaurantActions';
+import { getRestaurant, getMenu, getAdminRestaurant, getDefaultUserId } from '../actions/restaurantActions';
 import { getOrder } from '../actions/orderActions';
 import store from '../store';
 import { connect } from 'react-redux';
@@ -42,6 +43,9 @@ class routes extends Component {
             if (isEmpty(this.props.order)) {
                 store.dispatch(getOrder(restaurant_id));
             }
+            if (this.props.defaultUserId == -1) {
+                store.dispatch(getDefaultUserId());
+            }
         }
         this.setState({ loading: false });
     }
@@ -74,6 +78,7 @@ class routes extends Component {
                                     <Route exact path="*" element={<RestaurantMain />} />
                                     <Route exact path="/restaurant" element={<Main />} />
                                     <Route exact path="/restaurant/checkout" element={<CheckoutPage />} />
+                                    <Route exact path="/restaurant/user_order" element={<UserOrder />} />
                                 </>
                         }
                     </>
@@ -89,6 +94,7 @@ const mapStateToProps = store => {
         user: store.userState.user,
         restaurant: store.restaurantState.restaurant,
         menu: store.restaurantState.menu,
+        defaultUserId: store.restaurantState.defaultUserId,
         order: store.orderState.order,
     }
 }

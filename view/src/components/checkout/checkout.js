@@ -8,6 +8,8 @@ class Checkout extends Component {
     handleOrder() {
         const searchParams = new URLSearchParams(document.location.search);
         var table_id = searchParams.get('table_id');
+        var user_id = this.props.user ? this.props.user.id : this.props.defaultUserId;
+
         if (!table_id) {
             console.log(this.props.restaurant);
             table_id = this.props.restaurant.pickup.id;
@@ -22,8 +24,7 @@ class Checkout extends Component {
                 body: JSON.stringify({
                     restaurant_id: this.props.restaurant.id,
                     table_id: table_id,
-                    //user_id: this.props.user.id,
-                    user_id: 3,
+                    user_id: user_id,
                     status: "Waiting",
                     order_items: this.props.order,
                 }),
@@ -102,6 +103,7 @@ const mapStateToProps = store => {
     return {
         user: store.userState.user,
         restaurant: store.restaurantState.restaurant,
+        defaultUserId: store.restaurantState.defaultUserId,
         order: store.orderState.order,
         total: store.orderState.total,
         count: store.orderState.count,

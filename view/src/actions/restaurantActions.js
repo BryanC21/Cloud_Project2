@@ -3,6 +3,7 @@ import {
     DEL_RESTAURANT,
     SET_CATEGORIES,
     SET_MENU,
+    SET_DEFAULT_USER_ID,
 } from './actionTypes';
 
 export const setRestaurant = restaurant => {
@@ -30,6 +31,33 @@ export const setMenu = menu => {
         type: SET_MENU,
         menu
     };
+};
+
+export const setDefaultUserId = id => {
+    return {
+        type: SET_DEFAULT_USER_ID,
+        id
+    };
+};
+
+export const getDefaultUserId = () => {
+    const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
+    return dispatch => (fetch(api + "/api/restaurant/getDefaultUser",
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    ).then(response => response.json())
+        .then(data => {
+            if (data.code === 200) {
+                dispatch(setDefaultUserId(data.user.id));
+            } else {
+                alert(data.message);
+            }
+        })
+    )
 };
 
 export const getRestaurant = restaurantId => {
@@ -66,7 +94,6 @@ export const getRestaurant = restaurantId => {
                             alert(table.message);
                         }
                     })
-                dispatch(setRestaurant(data.restaurant));
             } else {
                 alert(data.message);
             }
