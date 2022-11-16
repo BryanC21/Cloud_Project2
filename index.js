@@ -99,6 +99,38 @@ const checkAuth = (req, res, next) => {
   }
 };
 
+//Require authentication to access api
+app.post( "/verify", (req, res) => {
+  const token = req.body.token;
+  console.log("----------------verifying");
+  if (token) {
+    try {
+      const decode = jwt.verify(token, process.env.JWT_KEY);
+      console.log("verified successfully");
+      res.json({
+        login: true,
+        message: "verified successfully",
+        data: decode
+      });
+    } catch (err) {
+      console.log("Error in verifying");
+      res.json({
+        login: false,
+        message: "Error in verifying",
+        data: err
+      });
+    }
+  }
+  else {
+    res.json(
+      {
+        login: false,
+        message: 'No token',
+        data: {}
+      })
+  }
+});
+
 //login route 
 //LOGIN (AUTHENTICATE USER, and return accessToken)
 
