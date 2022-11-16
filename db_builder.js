@@ -176,7 +176,7 @@ con.query(sql, function (err, result) {
 });
 
 //Inserts
-/*var sql = "INSERT INTO User (first_name, last_name, phone_number, password) VALUES ('John', 'Doe', '1234567890', 'password')";
+var sql = "INSERT INTO User (first_name, last_name, phone_number, password, level) VALUES ('John', 'Doe', '1234567890', 'password', 'admin')";
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
@@ -192,6 +192,6 @@ var sql = "INSERT INTO Menu_Item (name, description, image, price, restaurant_id
 con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("1 record inserted");
-});*/
+});
 
 con.end();
