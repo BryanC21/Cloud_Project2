@@ -263,9 +263,6 @@ app.post("/createUser", async (req, res) => {
   }) //end of db.getConnection()
 }) //end of app.post()
 
-
-
-
 //restaurant register
 app.post('/api/restaurant/register', checkAuth, function (req, res) {
   console.log("Restaurant register");
@@ -621,7 +618,7 @@ app.post('/api/restaurant/category/get', function (req, res) {
   //console.log(JSON.stringify(req.body));
   console.log(req.body);
   let id = req.body.id;
-  let sql = `SELECT DISTINCT(name), id FROM Category WHERE restaurant = '${id}'`;
+  let sql = `SELECT DISTINCT(name) FROM Category WHERE restaurant = '${id}'`;
   con.query(sql, function (err, result) {
     if (err) {
       console.log(err);
@@ -1279,6 +1276,21 @@ app.post('/api/restaurant/table/get', function (req, res) {
       } else {
         console.log("Result: " + JSON.stringify(result));
         res.status(200).send({ code: 200, message: "Table Get Successful", table: result });
+      }
+    });
+});
+
+app.post('/api/restaurant/getDefaultUser', function (req, res) {
+  console.log("Restaurant get default user");
+  let sql = `SELECT id FROM User WHERE phone_number = '0000000000'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get default user", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Default User Get Successful", user: result });
       }
     });
 });
