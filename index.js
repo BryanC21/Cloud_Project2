@@ -394,11 +394,7 @@ app.post('/api/restaurant/getAll', function (req, res) {
       res.status(400).send({ code: 400, message: "Failed to get all restaurants", error: err });
     } else {
       console.log("Result: " + JSON.stringify(result));
-      if (result.length != 0) {
-        res.status(200).send({ code: 200, message: "Restaurant Get All Successful", restaurants: result });
-      } else {
-        res.status(200).send({ code: 200, message: "No restaurants", restaurants: [] });
-      }
+      res.status(200).send({ code: 200, message: "Restaurant Get All Successful", restaurants: result });
     }
   });
 });
