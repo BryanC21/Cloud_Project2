@@ -129,6 +129,7 @@ con.query(sql, function (err, result) {
 // table_name
 // id
 var sql = "CREATE TABLE ResTable (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, \
+capacity INT NOT NULL, description VARCHAR(255), \
 restaurant_id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (restaurant_id) REFERENCES Restaurant(id) \
 ON DELETE CASCADE)";
 con.query(sql, function (err, result) {
