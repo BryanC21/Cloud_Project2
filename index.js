@@ -618,7 +618,7 @@ app.post('/api/restaurant/category/get', function (req, res) {
   //console.log(JSON.stringify(req.body));
   console.log(req.body);
   let id = req.body.id;
-  let sql = `SELECT DISTINCT(name) FROM Category WHERE restaurant = '${id}'`;
+  let sql = `SELECT DISTINCT(name), id FROM Category WHERE restaurant = '${id}'`;
   con.query(sql, function (err, result) {
     if (err) {
       console.log(err);
