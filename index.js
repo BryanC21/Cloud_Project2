@@ -646,6 +646,113 @@ app.post(`/api/uploadImage`, function (req, res) {
   });
 });
 
+//ordering 
+  //make order
+  //update order
+  //update order status
+  //get order by id
+  //get all orders for restaurant
+  //get all incopmlete orders for a restaurant
+  //get all complete orders for a restaurant
+  //get all orders for a user
+  //get all incomplete orders for a user
+  //get all complete orders for a user
+
+//table management
+  //add table
+  app.post('/api/restaurant/table/add', function (req, res) {
+    console.log("Restaurant table add");
+    //console.log(JSON.stringify(req.body));
+    let restaurant_id = req.body.restaurant_id;
+    let table_name = req.body.table_name;
+    let status = req.body.table_status;
+    let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${restaurant_id}', '${table_name}', '${status}')`;
+    con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to add table", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Table Add Successful", table: result });
+      }
+    });
+  });
+
+  //update table
+  app.post('/api/restaurant/table/update', function (req, res) {
+    console.log("Restaurant table update");
+    //console.log(JSON.stringify(req.body));
+    let table_id = req.body.table_id;
+    let table_name = req.body.table_name;
+    let status = req.body.table_status;
+    let sql = `UPDATE ResTable SET name = '${table_name}', status = '${status}' WHERE id = '${table_id}'`;
+    con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to update table", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Table Update Successful", table: result });
+      }
+    });
+  });
+
+  //delete table
+  app.post('/api/restaurant/table/delete', function (req, res) {
+    console.log("Restaurant table delete");
+    //console.log(JSON.stringify(req.body));
+    let table_id = req.body.table_id;
+    let sql = `DELETE FROM ResTable WHERE id = '${table_id}'`;
+    con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to delete table", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Table Delete Successful", table: result });
+      }
+    });
+  });
+
+  // get table
+  app.post('/api/restaurant/table/get', function (req, res) {
+    console.log("Restaurant table get");
+    //console.log(JSON.stringify(req.body));
+    let table_id = req.body.table_id;
+    let sql = `SELECT * FROM ResTable WHERE id = '${table_id}'`;
+    con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get table", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Table Get Successful", table: result });
+      }
+    });
+  });
+
+  // get tables for restaurant
+  app.post('/api/restaurant/table/getAll', function (req, res) {
+    console.log("Restaurant table get all");
+    //console.log(JSON.stringify(req.body));
+    let restaurant_id = req.body.restaurant_id;
+    let sql = `SELECT * FROM ResTable WHERE restaurant_id = '${restaurant_id}'`;
+    con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get tables", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Tables Get Successful", tables: result });
+      }
+    });
+  });
+
 app.get('/api', function (req, res) {
   res.send({
     "Output": "Default GET!"
