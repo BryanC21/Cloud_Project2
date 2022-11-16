@@ -621,7 +621,7 @@ app.post('/api/restaurant/category/get', function (req, res) {
   //console.log(JSON.stringify(req.body));
   console.log(req.body);
   let id = req.body.id;
-  let sql = `SELECT DISTINCT(name) FROM Category WHERE restaurant = '${id}'`;
+  let sql = `SELECT DISTINCT(name), id FROM Category WHERE restaurant = '${id}'`;
   con.query(sql, function (err, result) {
     if (err) {
       console.log(err);
@@ -1271,6 +1271,24 @@ app.post('/api/restaurant/table/get', function (req, res) {
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
   let sql = `SELECT * FROM ResTable WHERE id = '${table_id}'`;
+  con.query
+    (sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ code: 400, message: "Failed to get table", error: err });
+      } else {
+        console.log("Result: " + JSON.stringify(result));
+        res.status(200).send({ code: 200, message: "Table Get Successful", table: result });
+      }
+    });
+});
+
+//get PICKUP table for restaurant
+app.post('/api/restaurant/table/getpickup', function (req, res) {
+  console.log("Restaurant table get");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  let sql = `SELECT * FROM ResTable WHERE restaurant_id = '${restaurant_id}' AND name = 'PICKUP'`;
   con.query
     (sql, function (err, result) {
       if (err) {
