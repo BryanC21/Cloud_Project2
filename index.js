@@ -73,7 +73,7 @@ function datetime() {
 }
 
 //Require authentication to access api
-app.use("/api", (req, res, next) => {
+const checkAuth = (req, res, next) => {
   const token = req.body.token;
   console.log("----------------verifying");
   if (token) {
@@ -81,10 +81,6 @@ app.use("/api", (req, res, next) => {
       const decode = jwt.verify(token, process.env.JWT_KEY);
       req.body.decoded = decode;
       console.log("verified successfully");
-      /*res.json({
-         login: true,
-         data: decode
-      });*/
       next();
     } catch (err) {
       console.log("Error in verifying");
@@ -101,7 +97,7 @@ app.use("/api", (req, res, next) => {
         data: 'No token provided.'
       })
   }
-});
+};
 
 //login route 
 //LOGIN (AUTHENTICATE USER, and return accessToken)
@@ -238,7 +234,7 @@ app.post("/createUser", async (req, res) => {
 
 
 //restaurant register
-app.post('/api/restaurant/register', function (req, res) {
+app.post('/api/restaurant/register', checkAuth, function (req, res) {
   console.log("Restaurant register");
   //console.log(JSON.stringify(req.body));
   let name = req.body.name;
@@ -274,7 +270,7 @@ app.post('/api/restaurant/register', function (req, res) {
 });
 
 //update restaurant
-app.post('/api/restaurant/update', function (req, res) {
+app.post('/api/restaurant/update', checkAuth, function (req, res) {
   console.log("Restaurant update");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -298,7 +294,7 @@ app.post('/api/restaurant/update', function (req, res) {
 });
 
 //delete restaurant
-app.post('/api/restaurant/delete', function (req, res) {
+app.post('/api/restaurant/delete', checkAuth, function (req, res) {
   console.log("Restaurant delete");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -378,7 +374,7 @@ app.post('/api/restaurant/getAll', function (req, res) {
 });
 
 //add restaurant menu item
-app.post('/api/restaurant/menu/add', function (req, res) {
+app.post('/api/restaurant/menu/add', checkAuth, function (req, res) {
   console.log("Restaurant menu add");
   console.log(JSON.stringify(req.body));
   let name = req.body.name;
@@ -436,7 +432,7 @@ app.post('/api/restaurant/menu/add', function (req, res) {
 });
 
 //update restaurant menu item
-app.post('/api/restaurant/menu/update', function (req, res) {
+app.post('/api/restaurant/menu/update', checkAuth, function (req, res) {
   console.log("Restaurant menu update");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -461,7 +457,7 @@ app.post('/api/restaurant/menu/update', function (req, res) {
 });
 
 //update restaurant menu item
-app.post('/api/restaurant/menu/updateWithCategory', function (req, res) {
+app.post('/api/restaurant/menu/updateWithCategory', checkAuth, function (req, res) {
   console.log("Restaurant menu update with category");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -528,7 +524,7 @@ app.post('/api/restaurant/menu/updateWithCategory', function (req, res) {
 });
 
 //delete restaurant menu item
-app.post('/api/restaurant/menu/delete', function (req, res) {
+app.post('/api/restaurant/menu/delete', checkAuth, function (req, res) {
   console.log("Restaurant menu delete");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -632,7 +628,7 @@ app.post('/api/restaurant/menu/getAllForRestaurant', function (req, res) {
   });
 });
 
-app.post(`/api/uploadImage`, function (req, res) {
+app.post(`/api/uploadImage`, checkAuth, function (req, res) {
   console.log("Upload Image");
   var message;
   var form = new multiparty.Form();
@@ -919,7 +915,7 @@ app.post('/api/order/getAllUser', function (req, res) {
 
 //table management
 //add table
-app.post('/api/restaurant/table/add', function (req, res) {
+app.post('/api/restaurant/table/add', checkAuth, function (req, res) {
   console.log("Restaurant table add");
   //console.log(JSON.stringify(req.body));
   let restaurant_id = req.body.restaurant_id;
@@ -939,7 +935,7 @@ app.post('/api/restaurant/table/add', function (req, res) {
 });
 
 //update table
-app.post('/api/restaurant/table/update', function (req, res) {
+app.post('/api/restaurant/table/update', checkAuth, function (req, res) {
   console.log("Restaurant table update");
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
@@ -959,7 +955,7 @@ app.post('/api/restaurant/table/update', function (req, res) {
 });
 
 //delete table
-app.post('/api/restaurant/table/delete', function (req, res) {
+app.post('/api/restaurant/table/delete', checkAuth, function (req, res) {
   console.log("Restaurant table delete");
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
