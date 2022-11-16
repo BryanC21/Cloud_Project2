@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { Container } from "react-bootstrap";
 import Main from './main/main';
-import CheckoutPage from './checkout/checkout_page';
 import Admin from './admin/admin';
-import AdminMenu from './admin_menu/admin_menu';
 import RestaurantMain from './restaurant/restaurant_main';
-import ManageRestaurant from './admin/manage_restaurant';
 import { getUser } from '../actions/userActions';
 import store from '../store';
 import { connect } from 'react-redux';
 import { isEmpty } from './utils';
+import CheckoutPage from './checkout/checkout_page';
 
 class routes extends Component {
     componentDidMount() {
@@ -64,10 +61,10 @@ class routes extends Component {
                     :
                     <>
                         <Route exact path="/" element={<RestaurantMain />} />
-                        <Route exact path="/restaurant" element={<Main user={this.props.user} setUser={this.setUser} />} />
+                        <Route exact path="/restaurant" element={<Main />} />
+                        <Route exact path="/restaurant/checkout" element={<CheckoutPage />} />
                     </>
                 }
-                <Route exact path="/checkout" element={<CheckoutPage user={this.props.user} setUser={this.setUser} />} />
             </Routes>
         )
     }

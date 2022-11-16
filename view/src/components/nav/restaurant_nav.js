@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
 import SSO from '../sso/sso';
+import { isEmpty } from '../utils';
 
 class RestaurantNav extends Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class RestaurantNav extends Component {
                         </Nav>
 
                         <Nav>
-                            {user == null ?
+                            {isEmpty(user) ?
                                 <Nav.Link className='text-danger' onClick={() => this.setModalShow(true)}>Login</Nav.Link>
                                 :
                                 <NavDropdown title={user.username} id="basic-nav-dropdown">

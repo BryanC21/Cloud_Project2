@@ -14,35 +14,34 @@ class Signin extends React.Component {
         this.setState({ password: e.target.value });
     }
     handleSignin(e) {
-        const sso_url = process.env.SSO_URL || "https://oyygn6heb6.execute-api.us-west-1.amazonaws.com/prod/";
-        const sso_key = process.env.SSO_KEY || "U3T0Z9LBfY3S8ml1w7amnm20GIwy0kF75MjeXA2i";
-        fetch(sso_url + "/login",
+        const api = process.env.REACT_APP_API || "http://192.168.56.1:4080"
+        fetch(api + "/login",
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': sso_key,
                 },
                 body: JSON.stringify({
-                    'mobile_number': this.state.phone,
+                    'phone_number': this.state.phone,
                     'password': this.state.password,
                 }),
             }
         )
-            .then((response) => response.json().then(data => ({ status: response.status, body: data })))
+            .then((response) => response.json())
             .then((data) => {
                 if (data.status === 200) {
-                    sessionStorage.setItem("token", data.body.token);
-                    const user = {
-                        id: data.body.user.id,
-                        phone: data.body.user.mobile_number,
-                        username: data.body.user.username,
-                        firstName: data.body.user.first_name,
-                        lastName: data.body.user.last_name,
-                        level: data.body.user.level,
-                    }
-                    this.props.setUser(user);
-                    this.props.setModalShow(false);
+                    console.log(data.accessToken);
+                    //sessionStorage.setItem("token", data.body.token);
+                    //const user = {
+                    //    id: data.body.user.id,
+                    //    phone: data.body.user.mobile_number,
+                    //    username: data.body.user.username,
+                    //    firstName: data.body.user.first_name,
+                    //    lastName: data.body.user.last_name,
+                    //    level: data.body.user.level,
+                    //}
+                    //this.props.setUser(user);
+                    //this.props.setModalShow(false);
                 } else {
                     alert(data.body.message);
                 }

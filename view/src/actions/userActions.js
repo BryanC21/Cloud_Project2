@@ -10,14 +10,15 @@ export const setUser = user => {
 };
 
 export const getUser = () => {
-    const user = {
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '1234567890',
-        username: 'Test',
-        level: 'user',
-    };
+    //const user = {
+    //    id: 1,
+    //    firstName: 'John',
+    //    lastName: 'Doe',
+    //    phone: '1234567890',
+    //    username: 'Test',
+    //    level: 'admin',
+    //};
+    const user = {};
+
     return dispatch => dispatch(setUser(user));
 }
-

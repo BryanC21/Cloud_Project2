@@ -2,6 +2,7 @@ import React from 'react';
 import { Container } from "react-bootstrap";
 import RestaurantNav from '../nav/restaurant_nav';
 import RestaurantList from '../restaurant/restaurant_list';
+import { connect } from 'react-redux';
 
 class RestaurantMain extends React.Component {
     render() {
@@ -19,4 +20,10 @@ class RestaurantMain extends React.Component {
     }
 }
 
-export default RestaurantMain;
+const mapStateToProps = store => {
+    return {
+        user: store.userState.user,
+    }
+}
+
+export default connect(mapStateToProps)(RestaurantMain);

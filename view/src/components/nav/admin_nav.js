@@ -3,7 +3,7 @@ import { Nav, Navbar, NavDropdown, Modal, Button, Tab, Tabs, Container, Form } f
 import SSO from '../sso/sso';
 import { connect } from 'react-redux';
 import { isEmpty } from '../utils';
-import { setAdminPage } from '../../actions/adminPageAction';
+import { setAdminPage } from '../../actions/pageActions';
 
 import store from '../../store';
 

@@ -5,12 +5,15 @@ import Menu from '../main/menu';
 import TopNav from '../nav/nav';
 import { getRestaurant } from '../../actions/restaurantActions';
 import store from '../../store';
+import CheckoutPage from '../checkout/checkout_page';
+import { connect } from 'react-redux';
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: true,
+            reload: 1,
         }
     }
 
@@ -18,6 +21,19 @@ class Main extends React.Component {
         const searchParams = new URLSearchParams(document.location.search);
         await store.dispatch(getRestaurant(searchParams.get('id')));
         this.setState({ loading: false });
+    }
+
+    handleRedirect() {
+        switch (this.props.mainPage) {
+            case "main": return (
+                <>
+                <CategoryList />
+                    <Row className='justify-content-end'>
+                        <Menu />
+                    </Row>
+                </>);
+            case "checkout": return <CheckoutPage />;
+        }
     }
 
     render() {
@@ -28,12 +44,8 @@ class Main extends React.Component {
             <>
                 <TopNav />
                 <br />
-
                 <Container>
-                    <CategoryList />
-                    <Row className='justify-content-end'>
-                        <Menu />
-                    </Row>
+                    { this.handleRedirect()}
                 </Container>
                 <br />
             </>
@@ -41,4 +53,10 @@ class Main extends React.Component {
     }
 }
 
-export default Main;
+const mapStateToProps = store => {
+    return {
+        mainPage: store.pageState.mainPage,
+    }
+}
+
+export default connect(mapStateToProps)(Main);

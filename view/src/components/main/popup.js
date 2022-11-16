@@ -1,5 +1,8 @@
 import React from 'react';
 import { Modal, Button, Form } from "react-bootstrap";
+import { connect } from 'react-redux';
+import { setOrder } from '../../actions/orderActions';
+import store from '../../store';
 
 const popupDivStyle = {
     width: '100%',
@@ -14,9 +17,19 @@ class Popup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ...props,
+            quantity: 1,
         }
     }
+
+    handleAdd() {
+        const order = [...this.props.order, { ...this.props.item, quantity: this.state.quantity }]
+        store.dispatch(setOrder(order));
+        this.props.onHide();
+    }
+    handleQuantityChange(e) {
+        this.setState({ quantity: e.target.value });
+    }
+
     render() {
         return (
             <Modal
@@ -28,17 +41,17 @@ class Popup extends React.Component {
             >
                 <Modal.Header closeButton></Modal.Header>
                 <div style={popupDivStyle} className="p-2">
-                    <img className="card-img-top img-fluid" src={this.state.item.image} alt="Card image cap" style={imgStyle}></img>
+                    <img className="card-img-top img-fluid" src={this.props.item.image} alt="Card image cap" style={imgStyle}></img>
                 </div>
                 <div className="card-body">
-                    <h5 className="card-title">{this.state.item.name}</h5>
-                    <p className="card-text">${this.state.item.price}</p>
-                    <p className="card-text">{this.state.item.description}</p>
+                    <h5 className="card-title">{this.props.item.name}</h5>
+                    <p className="card-text">${this.props.item.price}</p>
+                    <p className="card-text">{this.props.item.description}</p>
                 </div>
                 <div className="p-3">
                     <Form.Label>Quantity</Form.Label>
-                    <input type="number" className="form-control w-75" min="1" defaultValue="1"></input>
-                    {this.state.item.extra && this.state.item.extra.length ? this.state.item.extra.map((pref, index) => (
+                    <input type="number" className="form-control w-75" min="1" value={this.state.quantity} onChange={(e) => this.handleQuantityChange(e)} />
+                    {this.props.item.extra && this.props.item.extra.length ? this.props.item.extra.map((pref, index) => (
                         <div className="form-group mt-2">
                             <label>{pref.name}</label>
                             <Form.Select className="w-75" id="exampleFormControlSelect1">
@@ -50,11 +63,17 @@ class Popup extends React.Component {
                     )) : ("")}
                 </div>
                 <Modal.Footer>
-                    <Button onClick={this.props.onHide}>Add To Order</Button>
+                    <Button onClick={() => this.handleAdd()}>Add To Order</Button>
                 </Modal.Footer>
             </Modal>
         )
     }
 }
 
-export default Popup;
+const mapStateToProps = store => {
+    return {
+        order: store.orderState.order,
+    }
+}
+
+export default connect(mapStateToProps)(Popup);
