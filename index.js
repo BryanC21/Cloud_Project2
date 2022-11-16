@@ -72,35 +72,32 @@ function datetime() {
 }
 
 //Require authentication to access api
-//app.use("/api", (req, res, next) => {
-//  const token = req.body.token;
-//  console.log("----------------verifying");
-//  if (token) {
-//    try {
-//      const decode = jwt.verify(token, process.env.JWT_KEY);
-//      req.body.decoded = decode;
-//      console.log("verified successfully");
-//      /*res.json({
-//         login: true,
-//         data: decode
-//      });*/
-//      next();
-//    } catch (err) {
-//      console.log("Error in verifying");
-//      res.json({
-//        login: false,
-//        message: "Error in verifying"
-//      });
-//    }
-//  }
-//  else {
-//    res.json(
-//      {
-//        login: false,
-//        data: 'No token provided.'
-//      })
-//  }
-//});
+
+const checkAuth = (req, res, next) => {
+  const token = req.body.token;
+  console.log("----------------verifying");
+  if (token) {
+    try {
+      const decode = jwt.verify(token, process.env.JWT_KEY);
+      req.body.decoded = decode;
+      console.log("verified successfully");
+      next();
+    } catch (err) {
+      console.log("Error in verifying");
+      res.json({
+        login: false,
+        message: "Error in verifying"
+      });
+    }
+  }
+  else {
+    res.json(
+      {
+        login: false,
+        data: 'No token provided.'
+      })
+  }
+};
 
 //login route 
 //LOGIN (AUTHENTICATE USER, and return accessToken)
@@ -236,8 +233,70 @@ db.getConnection( async (err, connection) => {
 }) //end of app.post()
 
 
+
+
+//restaurant register
+app.post('/api/restaurant/register', checkAuth, function (req, res) {
+  console.log("Restaurant register");
+  //console.log(JSON.stringify(req.body));
+  let name = req.body.name;
+  let description = req.body.description;
+  let logo = req.body.logo;
+  let owner_id = req.body.owner_id;
+  let sql = `INSERT INTO Restaurant (name, description, logo, owner_id) VALUES ('${name}', '${description}', '${logo}', '${owner_id}')`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to register restaurant", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.affectedRows != 0) {
+        let restaurant = result.insertId;
+        let sql = `INSERT INTO ResTable (restaurant_id, name, status) VALUES ('${result.insertId}', 'PICKUP', 'In_Use')`;
+        con.query(sql, function (err, result) {
+          if (err) {
+            console.log(err);
+            res.status(400).send({ code: 400, message: "Failed to register restaurant", error: err });
+          } else {
+            console.log("Result: " + JSON.stringify(result));
+            res.status(200).send({ code: 200, message: "Restaurant Register Successful", restaurant_id: restaurant });
+          }
+        });
+
+      } else {
+        res.status(400).send({ code: 400, message: "Restaurant Register Failed" });
+      }
+
+    }
+  });
+});
+
+//update restaurant
+app.post('/api/restaurant/update', checkAuth, function (req, res) {
+  console.log("Restaurant update");
+  //console.log(JSON.stringify(req.body));
+  let id = req.body.id;
+  let name = req.body.name;
+  let description = req.body.description;
+  let logo = req.body.logo;
+  let sql = `UPDATE Restaurant SET name = '${name}', description = '${description}', logo = '${logo}' WHERE id = '${id}'`;
+  con.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send({ code: 400, message: "Failed to update restaurant", error: err });
+    } else {
+      console.log("Result: " + JSON.stringify(result));
+      if (result.affectedRows != 0) {
+        res.status(200).send({ code: 200, message: "Restaurant Update Successful" });
+      } else {
+        res.status(400).send({ code: 400, message: "Restaurant Update Failed" });
+      }
+    }
+  });
+});
+
 //delete restaurant
-app.post('/api/restaurant/delete', function (req, res) {
+app.post('/api/restaurant/delete', checkAuth, function (req, res) {
   console.log("Restaurant delete");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -317,7 +376,7 @@ app.post('/api/restaurant/getAll', function (req, res) {
 });
 
 //add restaurant menu item
-app.post('/api/restaurant/menu/add', function (req, res) {
+app.post('/api/restaurant/menu/add', checkAuth, function (req, res) {
   console.log("Restaurant menu add");
   console.log(JSON.stringify(req.body));
   let name = req.body.name;
@@ -375,7 +434,7 @@ app.post('/api/restaurant/menu/add', function (req, res) {
 });
 
 //update restaurant menu item
-app.post('/api/restaurant/menu/update', function (req, res) {
+app.post('/api/restaurant/menu/update', checkAuth, function (req, res) {
   console.log("Restaurant menu update");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -400,7 +459,7 @@ app.post('/api/restaurant/menu/update', function (req, res) {
 });
 
 //update restaurant menu item
-app.post('/api/restaurant/menu/updateWithCategory', function (req, res) {
+app.post('/api/restaurant/menu/updateWithCategory', checkAuth, function (req, res) {
   console.log("Restaurant menu update with category");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -467,7 +526,7 @@ app.post('/api/restaurant/menu/updateWithCategory', function (req, res) {
 });
 
 //delete restaurant menu item
-app.post('/api/restaurant/menu/delete', function (req, res) {
+app.post('/api/restaurant/menu/delete', checkAuth, function (req, res) {
   console.log("Restaurant menu delete");
   //console.log(JSON.stringify(req.body));
   let id = req.body.id;
@@ -571,7 +630,7 @@ app.post('/api/restaurant/menu/getAllForRestaurant', function (req, res) {
   });
 });
 
-app.post(`/api/uploadImage`, function (req, res) {
+app.post(`/api/uploadImage`, checkAuth, function (req, res) {
   console.log("Upload Image");
   var message;
   var form = new multiparty.Form();
@@ -815,7 +874,7 @@ app.post('/api/order/getAllRestaurant', function (req, res) {
 
 //table management
 //add table
-app.post('/api/restaurant/table/add', function (req, res) {
+app.post('/api/restaurant/table/add', checkAuth, function (req, res) {
   console.log("Restaurant table add");
   //console.log(JSON.stringify(req.body));
   let restaurant_id = req.body.restaurant_id;
@@ -835,7 +894,7 @@ app.post('/api/restaurant/table/add', function (req, res) {
 });
 
 //update table
-app.post('/api/restaurant/table/update', function (req, res) {
+app.post('/api/restaurant/table/update', checkAuth, function (req, res) {
   console.log("Restaurant table update");
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
@@ -855,7 +914,7 @@ app.post('/api/restaurant/table/update', function (req, res) {
 });
 
 //delete table
-app.post('/api/restaurant/table/delete', function (req, res) {
+app.post('/api/restaurant/table/delete', checkAuth, function (req, res) {
   console.log("Restaurant table delete");
   //console.log(JSON.stringify(req.body));
   let table_id = req.body.table_id;
