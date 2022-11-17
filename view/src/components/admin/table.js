@@ -140,6 +140,10 @@ class Table extends React.Component {
             In_Use: "In Use",
             Empty: "Empty",
         }
+        const qr = "https://api.qrserver.com/v1/create-qr-code/?" + new URLSearchParams({
+            size: '400X400',
+            data: window.location.origin + "?restaurant_id=" + this.props.restaurant.id + "&table_id=" + this.props.table.id,
+        })
         return (
             <Card className="mb-5 items-body">
                 <Card.Body>
@@ -168,6 +172,7 @@ class Table extends React.Component {
                             )) : null
                         }
                     <div className="d-flex justify-content-end">
+                        <a href={qr} target="_blank" download><Button variant="info" className="m-2">QR Code</Button></a>
                         <Button variant="secondary" className="m-2" onClick={()=>this.props.handleAdd("update", table) }>Edit Table</Button>
                         <Button variant="danger" className="m-2" onClick={()=>this.handleStatusChange("Empty") }>Close Table</Button>
                         <Button variant="primary" className="m-2" onClick={() => this.handleStatusChange("In_Use") }>Open Table</Button>
