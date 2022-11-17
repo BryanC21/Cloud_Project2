@@ -172,10 +172,10 @@ class ItemPopup extends React.Component {
                         <Button className="mt-3" onClick={() => this.handleAddFields()}>Add Category</Button>
                     </Form.Group>
                 </Card.Body>
-                <Card.Body>
-                    <h4>Preferences:</h4>
-                    <Preference data={this.state.extra} />
-                </Card.Body>
+                {/*<Card.Body>*/}
+                {/*    <h4>Preferences:</h4>*/}
+                {/*    <Preference data={this.state.extra} />*/}
+                {/*</Card.Body>*/}
                 <Modal.Footer>
                     <Button onClick={() => { this.handleManage() }}>Save Changes</Button>
                 </Modal.Footer>

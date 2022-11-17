@@ -17,35 +17,16 @@ class Main extends React.Component {
         }
     }
 
-    //async componentDidMount() {
-    //    const searchParams = new URLSearchParams(document.location.search);
-    //    await store.dispatch(getRestaurant(searchParams.get('id')));
-    //    this.setState({ loading: false });
-    //}
-
-    handleRedirect() {
-        switch (this.props.mainPage) {
-            case "main": return (
-                <>
-                <CategoryList />
-                    <Row className='justify-content-end'>
-                        <Menu />
-                    </Row>
-                </>);
-            case "checkout": return <CheckoutPage />;
-        }
-    }
-
     render() {
-        //if (this.state.loading) {
-        //    return <h1>Loading...</h1>;
-        //}
         return (
             <>
                 <TopNav />
                 <br />
                 <Container>
-                    { this.handleRedirect()}
+                    <CategoryList/>
+                    <Row className='justify-content-end'>
+                        <Menu />
+                    </Row>
                 </Container>
                 <br />
             </>

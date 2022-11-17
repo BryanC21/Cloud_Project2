@@ -85,8 +85,8 @@ class Item extends React.Component {
                                 <Card.Body>
                                     <h5 className="card-title">{item.name}</h5>
                                     <p className="card-text">${item.price}</p>
-                                    <p className="card-text">{item.description}</p>
-
+                                        <p className="card-text">{item.description}</p>
+                                        <p className="card-text">Categories:<br/>{item.categories.join(", ") }</p>
                                     <Button className="mt-3 me-2" variant="primary" onClick={() => this.popup(item)}>
                                         Edit
                                     </Button>

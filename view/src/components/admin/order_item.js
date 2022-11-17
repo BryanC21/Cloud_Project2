@@ -54,7 +54,6 @@ class OrderItem extends React.Component {
 
     render() {
         const data = this.props.data;
-        console.log(data);
         return (
             <Card className="items-body">
                 <Card.Body>
