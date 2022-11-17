@@ -6,7 +6,7 @@ class CategoryList extends React.Component {
     render() {
         const data = this.props.menu;
         return (
-            <Col sm className="position-fixed">
+            <Col className="position-fixed category-list">
                 <ListGroup variant="flush">
                     <ListGroup.Item className="mb-2">
                         Menu

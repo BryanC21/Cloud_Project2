@@ -43,7 +43,7 @@ class Order extends React.Component {
                         {
                             data.order_items && data.order_items.length ? data.order_items.map((item, index) => (
                                 <Fragment key={`${item}~${index}`}>
-                                    <Col xs="8" lg="3" md="3">
+                                    <Col xs="12" lg="3" md="3">
                                         <OrderItem data={item} getTables={this.props.getTables} getOrders={this.props.getOrders } />
                                     </Col>
                                 </Fragment>
