@@ -1331,6 +1331,37 @@ app.post('/api/restaurant/table/getAll', function (req, res) {
     });
 });
 
+//Generate data for restaurant
+/*
+Data range:
+past 7 days
+past 30 days
+year to date
+
+Data points:
+total orders
+total revenue
+avg orders per day
+avg revenue per day
+ */
+app.post('/api/restaurant/generateData', function (req, res) {
+  console.log("Restaurant generate data week");
+  //console.log(JSON.stringify(req.body));
+  let restaurant_id = req.body.restaurant_id;
+  //In orders table, get all orders count for some time period, for some restaurant
+  //let sql = `SELECT COUNT(*) FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)`;
+  //let sql = `SELECT COUNT(*) FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)`;
+  //let sql = `SELECT COUNT(*) FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 365 DAY)`;
+  //For all Order_Item that are part of the orders, get the sum of the price
+  //let sql = `SELECT SUM(CAST(Menu_Item.price AS DECIMAL(12,2)) * Order_Item.quantity) AS total_revenue FROM Order_Item JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id WHERE order_id IN (SELECT id FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 7 DAY))`;
+  //let sql = `SELECT SUM(CAST(Menu_Item.price AS DECIMAL(12,2)) * Order_Item.quantity) AS total_revenue FROM Order_Item JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id WHERE order_id IN (SELECT id FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 30 DAY))`;
+  //let sql = `SELECT SUM(CAST(Menu_Item.price AS DECIMAL(12,2)) * Order_Item.quantity) AS total_revenue FROM Order_Item JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id WHERE order_id IN (SELECT id FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 365 DAY))`;
+  //For all orders, get the average of the price
+  //let sql = `SELECT AVG(CAST(Menu_Item.price AS DECIMAL(12,2)) * Order_Item.quantity) AS avg_revenue FROM Order_Item JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id WHERE order_id IN (SELECT id FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 7 DAY))`;
+  //let sql = `SELECT AVG(CAST(Menu_Item.price AS DECIMAL(12,2)) * Order_Item.quantity) AS avg_revenue FROM Order_Item JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id WHERE order_id IN (SELECT id FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 30 DAY))`;
+  //let sql = `SELECT AVG(CAST(Menu_Item.price AS DECIMAL(12,2)) * Order_Item.quantity) AS avg_revenue FROM Order_Item JOIN Menu_Item ON Order_Item.item_id = Menu_Item.id WHERE order_id IN (SELECT id FROM ResOrder WHERE restaurant_id = '${restaurant_id}' AND order_date >= DATE_SUB(NOW(), INTERVAL 365 DAY))`;
+});
+
 app.get('/api', function (req, res) {
   res.send({
     "Output": "Default GET!"
